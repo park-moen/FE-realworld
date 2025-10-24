@@ -4,13 +4,17 @@
  */
 
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { includeIgnoreFile } from '@eslint/compat';
 import js from '@eslint/js';
 import { configs, plugins } from 'eslint-config-airbnb-extended';
 import { rules as prettierConfigRules } from 'eslint-config-prettier';
+import { createTypeScriptImportResolver } from 'eslint-import-resolver-typescript';
 import prettierPlugin from 'eslint-plugin-prettier';
 
-const gitignorePath = path.resolve('.', '.gitignore');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const gitignorePath = path.resolve(__dirname, '.gitignore');
 
 const jsConfig = [
   // ESLint 권장 규칙 적용
@@ -44,6 +48,25 @@ const typescriptConfig = [
   ...configs.base.typescript,
   // Airbnb React + TypeScript 설정
   ...configs.react.typescript,
+
+  // ✅ TypeScript Import Resolver 설정
+  {
+    name: 'typescript/import-resolver',
+    settings: {
+      'import-x/resolver-next': [
+        createTypeScriptImportResolver({
+          // @types 디렉토리를 항상 확인
+          alwaysTryTypes: true,
+
+          // ✅ tsconfig.app.json 사용 (애플리케이션 코드)
+          // project: './tsconfig.app.json', // 단일 파일 방식
+
+          // ✅ 여러 tsconfig 지원 (권장)
+          project: ['./tsconfig.json'],
+        }),
+      ],
+    },
+  },
 ];
 
 const prettierConfig = [
@@ -133,6 +156,17 @@ const customRulesConfig = [
   },
 ];
 
+// 설정 파일에 대한 예외 규칙
+const environmentConfig = [
+  {
+    name: 'custom/environment-config',
+    files: ['./eslint.config.mjs'],
+    rules: {
+      'no-underscore-dangle': 'off',
+    },
+  },
+];
+
 // 테스트 파일 및 설정 파일에 대한 예외 규칙
 const testFilesOverrides = [
   {
@@ -160,6 +194,8 @@ export default [
   ...prettierConfig,
   // Custom 규칙
   ...customRulesConfig,
+  // 설정 파일 예외 규칙
+  ...environmentConfig,
   // 테스트 파일 예외 규칙
   ...testFilesOverrides,
 ];
