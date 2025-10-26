@@ -12,14 +12,18 @@
     "test": "vitest --run",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --run --coverage",
+    "cy:open": "cross-env NODE_ENV=development CYPRESS_ENV=debug cypress open",
+    "cy:run": "cross-env NODE_ENV=development CYPRESS_ENV=debug cypress run",
     "prepare": "husky",
     "test:pre-push": "npm test"
   },
   "dependencies": {
+    "axios": "^1.12.2",
     "react": "^19.1.1",
     "react-dom": "^19.1.1"
   },
   "devDependencies": {
+    "@cypress/grep": "^5.0.0",
     "@eslint/compat": "^1.4.0",
     "@eslint/js": "^9.38.0",
     "@stylistic/eslint-plugin": "^3.1.0",
@@ -32,6 +36,9 @@
     "@vitejs/plugin-react": "^5.0.4",
     "@vitest/coverage-v8": "^3.2.4",
     "@vitest/ui": "^3.2.4",
+    "cross-env": "^10.1.0",
+    "cypress": "^14.5.4",
+    "dotenv": "^17.2.3",
     "eslint": "^9.38.0",
     "eslint-config-airbnb-extended": "^2.3.2",
     "eslint-config-prettier": "^10.1.8",

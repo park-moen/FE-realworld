@@ -1,7 +1,10 @@
 {
+  "compilerOptions": {
+    // Cypress는 ts-node를 통해 트랜스파일하며,
+    // Cypress Config의 해석 기준은 tsconfig.json만을 해석 (하위/개별 tsconfig는 직접 지정 없이는 무시)
+    // Cypress 15에서는 ts-node 대신 tsx(ESM/cjs 완전 지원)을 쓸 계획
+    "module": "ESNext"
+  },
   "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ]
+  "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }]
 }
