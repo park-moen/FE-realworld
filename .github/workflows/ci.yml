@@ -49,7 +49,7 @@ jobs:
         run: npm ci
 
       - name: Wait for Railway
-        run: npx wait-on ${{ secrets.API_URL }}/health -t 60000
+        run: npx wait-on ${{ secrets.API_URL }}/health -t 30000
 
       - name: Cypress E2E
         uses: cypress-io/github-action@v6
@@ -60,3 +60,5 @@ jobs:
         env:
           API_URL: ${{ secrets.API_URL }}
           BASE_URL: http://localhost:5173
+          CYPRESS_ENV: debug
+          NODE_ENV: CI
