@@ -7,7 +7,7 @@ dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
 
 export default defineConfig({
   e2e: {
-    baseUrl: 'http://localhost:5173',
+    baseUrl: process.env.BASE_URL,
     async setupNodeEvents(_, config) {
       cypressGrepPlugin(config);
 
