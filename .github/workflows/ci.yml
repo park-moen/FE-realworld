@@ -4,13 +4,48 @@ on:
   push:
     branches: [main]
   pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
     branches: [main]
 
 jobs:
-  # Job 1: 코드 품질 검사
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      should_run_e2e: ${{ steps.check.outputs.should_run_e2e }}
+      e2e_scope: ${{ steps.check.outputs.e2e_scope }}
+    steps:
+      - name: Check E2E execution condition
+        id: check
+        run: |
+          # Main push: Full E2E (핵심 플로우)
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            echo "✅ Main 브랜치 Push: Full E2E 실행"
+            echo "should_run_e2e=true" >> $GITHUB_OUTPUT
+            echo "e2e_scope=full" >> $GITHUB_OUTPUT
+
+          # PR with skip-e2e label: E2E 스킵 (UI 작업만)
+          elif [[ "${{ contains(github.event.pull_request.labels.*.name, 'skip-e2e') }}" == "true" ]]; then
+            echo "⏭️  skip-e2e 라벨 감지: E2E 스킵 (Unit / Component / Integration Test만)"
+            echo "should_run_e2e=false" >> $GITHUB_OUTPUT
+            echo "e2e_scope=none" >> $GITHUB_OUTPUT
+
+          # Default PR: Preview E2E 실행 (CI 본질 유지)
+          else
+            echo "✅ Default PR: Preview E2E 실행 (핵심 플로우)"
+            echo "should_run_e2e=true" >> $GITHUB_OUTPUT
+            echo "e2e_scope=preview" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Display execution plan
+        run: |
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "Event Type: ${{ github.event_name }}"
+          echo "E2E 실행 여부: ${{ steps.check.outputs.should_run_e2e }}"
+          echo "E2E Scope: ${{ steps.check.outputs.e2e_scope }}"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
   code-quality:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -21,20 +56,24 @@ jobs:
           node-version: "20"
           cache: "npm"
 
-      - name: Install
+      - name: Install dependencies
         run: npm ci
 
       - name: Lint
         run: npm run lint
 
-      - name: Unit Tests
+      # Unit + Integration + Component Tests (항상 실행)
+      - name: Run Unit & Component Tests
         run: npm run test
 
-  # Job 2: E2E 테스트
+      # Storybook 빌드 테스트 (선택)
+      - name: Build Storybook
+        run: npm run build-storybook
+
   e2e:
     runs-on: ubuntu-latest
-    needs: code-quality
-
+    needs: [code-quality, prepare]
+    if: needs.prepare.outputs.should_run_e2e == 'true'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -45,20 +84,38 @@ jobs:
           node-version: "20"
           cache: "npm"
 
-      - name: Install
+      - name: Install dependencies
         run: npm ci
 
-      - name: Wait for Railway
-        run: npx wait-on ${{ secrets.API_URL }}/health -t 30000
-
-      - name: Cypress E2E
+      - name: Run E2E Tests (Preview)
+        if: needs.prepare.outputs.e2e_scope == 'preview'
         uses: cypress-io/github-action@v6
         with:
           start: npm run dev
           wait-on: "http://localhost:5173"
           browser: chrome
-        env:
-          API_URL: ${{ secrets.API_URL }}
-          BASE_URL: http://localhost:5173
-          CYPRESS_ENV: debug
-          NODE_ENV: CI
+          command: cy:run:preview
+
+      - name: Run E2E Tests (Full)
+        if: needs.prepare.outputs.e2e_scope != 'preview'
+        uses: cypress-io/github-action@v6
+        with:
+          start: npm run dev
+          wait-on: "http://localhost:5173"
+          browser: chrome
+          command: cy:run
+
+  summary:
+    runs-on: ubuntu-latest
+    needs: [prepare, code-quality, e2e]
+    if: always()
+    steps:
+      - name: CI Summary
+        run: |
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "=== CI 실행 결과 ==="
+          echo "Event: ${{ github.event_name }}"
+          echo "E2E Scope: ${{ needs.prepare.outputs.e2e_scope }}"
+          echo "Code Quality: ${{ needs.code-quality.result }}"
+          echo "E2E: ${{ needs.e2e.result }}"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
