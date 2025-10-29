@@ -90,7 +90,6 @@ jobs:
           start: npm run dev
           wait-on: "http://localhost:5173"
           browser: chrome
-          command: cy:run:preview
         env:
           API_URL: ${{ secrets.API_URL }}
           BASE_URL: http://localhost:5173
@@ -104,7 +103,6 @@ jobs:
           start: npm run dev
           wait-on: "http://localhost:5173"
           browser: chrome
-          command: cy:run
         env:
           API_URL: ${{ secrets.API_URL }}
           BASE_URL: http://localhost:5173
