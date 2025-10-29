@@ -14,6 +14,7 @@
     "test:coverage": "vitest --run --coverage",
     "cy:open": "cross-env NODE_ENV=development CYPRESS_ENV=debug cypress open",
     "cy:run": "cross-env NODE_ENV=development CYPRESS_ENV=debug cypress run",
+    "cy:run:preview": "cross-env NODE_ENV=development CYPRESS_ENV=preview cypress run",
     "prepare": "husky",
     "test:pre-push": "npm test"
   },
