@@ -91,6 +91,11 @@ jobs:
           wait-on: "http://localhost:5173"
           browser: chrome
           command: cy:run:preview
+        env:
+          API_URL: ${{ secrets.API_URL }}
+          BASE_URL: http://localhost:5173
+          CYPRESS_ENV: preview
+          NODE_ENV: CI
 
       - name: Run E2E Tests (Full)
         if: needs.prepare.outputs.e2e_scope != 'preview'
@@ -100,6 +105,11 @@ jobs:
           wait-on: "http://localhost:5173"
           browser: chrome
           command: cy:run
+        env:
+          API_URL: ${{ secrets.API_URL }}
+          BASE_URL: http://localhost:5173
+          CYPRESS_ENV: debug
+          NODE_ENV: CI
 
   summary:
     runs-on: ubuntu-latest
