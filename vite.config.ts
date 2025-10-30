@@ -1,11 +1,17 @@
 /// <reference types="vitest" />
 import path from 'path';
+import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 
 // https://vite.dev/config/
-export default defineConfig({
-  plugins: [react()],
+export default defineConfig(({ mode }) => ({
+  plugins: [
+    react(),
+    vanillaExtractPlugin({
+      identifiers: mode === 'production' ? 'short' : 'debug',
+    }),
+  ],
 
   // Vite Path Alias 설정
   resolve: {
@@ -33,4 +39,4 @@ export default defineConfig({
       exclude: ['src/**/*.d.ts', 'src/**/*.stories.tsx'],
     },
   },
-});
+}));
