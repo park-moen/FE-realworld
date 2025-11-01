@@ -1,14 +1,11 @@
 import { QueryClientProvider } from '@tanstack/react-query';
-import { BrowserRouter } from 'react-router-dom';
 import { queryClient } from '~shared/queryClient';
-import { Router } from './providers/RouterProvider';
+import { BootstrappedRouter } from './browser-router';
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <QueryClientProvider client={queryClient}>
-        <Router />
-      </QueryClientProvider>
-    </BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <BootstrappedRouter />
+    </QueryClientProvider>
   );
 }
