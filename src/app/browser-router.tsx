@@ -1,8 +1,8 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { pathKey } from '~shared/router';
 import { BaseRegisterForm } from '~features/session/register/register.ui';
-import { MainLayout } from '~pages/layouts';
-import { HomePage } from '~pages/main';
+import { HomePage } from '~pages/home/Homepage';
+import { Layout } from '~pages/layouts/Layout';
 
 export function BootstrappedRouter() {
   return <RouterProvider router={browserRouter} />;
@@ -11,7 +11,7 @@ export function BootstrappedRouter() {
 const browserRouter = createBrowserRouter([
   {
     path: '/',
-    Component: MainLayout,
+    Component: Layout,
     children: [
       { index: true, Component: HomePage },
       {
