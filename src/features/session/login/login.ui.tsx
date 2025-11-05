@@ -26,10 +26,6 @@ export function BaseLoginForm() {
   });
 
   const mutationErrors = (error?.response?.data || [error?.message]) as string[];
-  console.log(error?.message);
-
-  console.log('mutationErrors', mutationErrors);
-
   const canSubmit = [isDirty, isValid, !isPending].every(Boolean);
 
   const onValid = (loginUser: LoginUser) => {

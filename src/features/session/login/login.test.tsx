@@ -1,6 +1,6 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { BrowserRouter, data, useNavigate } from 'react-router-dom';
+import { BrowserRouter, useNavigate } from 'react-router-dom';
 import type { MockedFunction } from 'vitest';
 import { api } from '~shared/api/api.instance';
 import type { UserDto } from '~shared/api/api.schemas';
