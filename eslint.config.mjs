@@ -87,12 +87,13 @@ const prettierConfig = [
   },
 ];
 
-export const allowEmptyInterfaceForStoreFile = [
+const allowEmptyInterfaceForStoreFile = [
   {
+    name: 'custom/store-empty-interface',
     files: ['src/shared/store.ts', 'src/entities/**/*.{js,ts,jsx,tsx}'],
     rules: {
       // 빈 인터페이스 선언 허용
-      // 이유: RTK의 동적 슬라이스 로딩 패턴 적용을 위해선 빈 interface가 필요함.
+      // 이유: RTK의 동적 슬라이스 로딩 패턴 적용을 위해서는 빈 interface가 필요함.
       '@typescript-eslint/no-empty-object-type': ['error', { allowInterfaces: 'always' }],
     },
   },
