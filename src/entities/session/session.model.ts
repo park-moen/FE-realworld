@@ -20,7 +20,6 @@ const sessionSlice = createSlice({
 export const { setSession, resetSession } = sessionSlice.actions;
 
 declare module '~shared/store' {
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   export interface LazyLoadedSlices extends WithSlice<typeof sessionSlice> {}
 }
 
