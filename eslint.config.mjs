@@ -93,7 +93,7 @@ export const allowEmptyInterfaceForStoreFile = [
     rules: {
       // 빈 인터페이스 선언 허용
       // 이유: RTK의 동적 슬라이스 로딩 패턴 적용을 위해선 빈 interface가 필요함.
-      '@typescript-eslint/no-empty-object-type': ['error', { allowInterfaces: true }],
+      '@typescript-eslint/no-empty-object-type': ['error', { allowInterfaces: 'always' }],
     },
   },
 ];
