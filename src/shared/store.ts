@@ -2,7 +2,6 @@ import { combineSlices, configureStore } from '@reduxjs/toolkit';
 import { persistReducer, persistStore, FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface LazyLoadedSlices {}
 
 export const rootReducer = combineSlices().withLazyLoadedSlices<LazyLoadedSlices>();
