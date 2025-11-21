@@ -1,8 +1,6 @@
 import { queryOptions } from '@tanstack/react-query';
 import { getUser } from '~shared/api/api.service';
-import { queryClient } from '~shared/queryClient';
 import { transformUserDtoToUser } from './session.lib';
-import type { User } from './session.type';
 
 export const sessionQueryOptions = queryOptions({
   queryKey: ['session', 'current-user'] as const,
@@ -13,8 +11,4 @@ export const sessionQueryOptions = queryOptions({
 
     return user;
   },
-
-  initialData: () => queryClient.getQueryData<User>(['session', 'current-user']),
-
-  initialDataUpdatedAt: () => queryClient.getQueryState(['session', 'current-user'])?.dataUpdatedAt,
 });
