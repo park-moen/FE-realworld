@@ -2,6 +2,12 @@ import { type UseMutationOptions, useMutation } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 import { z } from 'zod';
 import { registerUser } from '~shared/api/api.service';
+import { queryClient } from '~shared/queryClient';
+import { store } from '~shared/store';
+import { sessionQueryOptions } from '~entities/session/session.api';
+import { transformUserDtoToUser } from '~entities/session/session.lib';
+import { setSession } from '~entities/session/session.model';
+import { transformRegisterUserToRegisterUserDto } from './register.lib';
 import { type RegisterUser } from './register.schema';
 
 export const UserSchema = z.object({
@@ -26,8 +32,9 @@ export function useRegisterMutation(
     mutationKey: ['session', 'register-user', ...mutationKey],
 
     mutationFn: async (registerUserData: RegisterUser) => {
-      const registerUserDto = { user: registerUserData };
-      const { user } = await registerUser(registerUserDto);
+      const registerUserDto = transformRegisterUserToRegisterUserDto(registerUserData);
+      const data = await registerUser(registerUserDto);
+      const user = transformUserDtoToUser(data);
 
       return user;
     },
@@ -35,7 +42,8 @@ export function useRegisterMutation(
     onMutate,
 
     onSuccess: async (data, variables, onMutateResult, context) => {
-      localStorage.setItem('token', JSON.stringify(data.token));
+      queryClient.setQueryData(sessionQueryOptions.queryKey, data);
+      store.dispatch(setSession(data));
       await onSuccess?.(data, variables, onMutateResult, context);
     },
 
