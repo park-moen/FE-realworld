@@ -28,7 +28,7 @@ export async function loginUser(loginUserDto: LoginUserDto): Promise<UserDto> {
 // ! 엔드포인트 users/user -> user로 변경해야함. real world docs 엔드포인트는 user로 지정함.
 export async function getUser(config?: AxiosRequestConfig): Promise<UserDto> {
   const response = await api.get('/users/user', config);
-  const parsedResponse = UserDtoSchema.parse(response);
+  const parsedResponse = UserDtoSchema.parse(response.data);
 
   return parsedResponse;
 }
