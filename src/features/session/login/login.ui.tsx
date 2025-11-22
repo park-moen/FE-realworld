@@ -12,12 +12,12 @@ import { LoginUserSchema, type LoginUser } from './login.schema';
 export default function LoginForm() {
   return (
     <ErrorBoundary FallbackComponent={ErrorHandler} onError={logError}>
-      <BaseRegisterForm />
+      <BaseLoginForm />
     </ErrorBoundary>
   );
 }
 
-function BaseRegisterForm() {
+function BaseLoginForm() {
   const navigate = useNavigate();
 
   const {
