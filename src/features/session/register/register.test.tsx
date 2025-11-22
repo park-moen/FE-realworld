@@ -6,7 +6,7 @@ import { api } from '~shared/api/api.instance';
 import type { UserDto } from '~shared/api/api.schemas';
 import { renderWithQueryClient } from '~shared/lib/test/test.lib';
 import type { RegisterUser } from './register.schema';
-import { BaseRegisterForm } from './register.ui';
+import RegisterForm from './register.ui';
 
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual<typeof import('react-router-dom')>('react-router-dom');
@@ -104,7 +104,7 @@ function renderRegisterForm() {
   const user = userEvent.setup();
   const renderResult = renderWithQueryClient(
     <BrowserRouter>
-      <BaseRegisterForm />
+      <RegisterForm />
     </BrowserRouter>,
   );
 

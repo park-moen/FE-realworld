@@ -1,12 +1,23 @@
 import { ErrorMessage } from '@hookform/error-message';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { ErrorBoundary } from 'react-error-boundary';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { pathKey } from '~shared/router';
+import { logError } from '~shared/ui/error-handler/error-handler.lib';
+import { ErrorHandler } from '~shared/ui/error-handler/error-handler.ui';
 import { useRegisterMutation } from './register.mutation';
 import { RegisterUserSchema, type RegisterUser } from './register.schema';
 
-export function BaseRegisterForm() {
+export default function RegisterForm() {
+  return (
+    <ErrorBoundary FallbackComponent={ErrorHandler} onError={logError}>
+      <BaseRegisterForm />
+    </ErrorBoundary>
+  );
+}
+
+function BaseRegisterForm() {
   const navigate = useNavigate();
 
   const {

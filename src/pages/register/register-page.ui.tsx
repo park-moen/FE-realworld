@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { pathKey } from '~shared/router';
-import { BaseRegisterForm } from '~features/session/register/register.ui';
+import RegisterForm from '~features/session/register/register.ui';
 
 export default function RegisterPage() {
   return (
@@ -14,7 +14,7 @@ export default function RegisterPage() {
               <Link to={pathKey.login}>Have an account?</Link>
             </p>
 
-            <BaseRegisterForm />
+            <RegisterForm />
           </div>
         </div>
       </div>
