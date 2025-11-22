@@ -32,8 +32,8 @@ export function useLoginMutation(
     onMutate,
 
     onSuccess: async (data, variables, onMutateResult, context) => {
-      store.dispatch(setSession(data));
       queryClient.setQueryData(sessionQueryOptions.queryKey, data);
+      store.dispatch(setSession(data));
       await onSuccess?.(data, variables, onMutateResult, context);
     },
 
