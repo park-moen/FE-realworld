@@ -1,18 +1,14 @@
 import { useMutation, type UseMutationOptions } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
-import z from 'zod';
 import { loginUser } from '~shared/api/api.service';
+import { queryClient } from '~shared/queryClient';
+import { store } from '~shared/store';
+import { sessionQueryOptions } from '~entities/session/session.api';
+import { transformUserDtoToUser } from '~entities/session/session.lib';
+import { setSession } from '~entities/session/session.model';
+import type { User } from '~entities/session/session.type';
+import { transformLoginUserToLoginUserDto } from './login.lib';
 import type { LoginUser } from './login.schema';
-
-export const UserSchema = z.object({
-  email: z.string(),
-  token: z.string(),
-  username: z.string(),
-  bio: z.string().nullable(),
-  image: z.string().nullable(),
-});
-
-type User = z.infer<typeof UserSchema>;
 
 export function useLoginMutation(
   options: Pick<
@@ -26,8 +22,9 @@ export function useLoginMutation(
     mutationKey: ['session', 'login-user', ...mutationKey],
 
     mutationFn: async (loginUserData: LoginUser) => {
-      const loginUserDto = { user: loginUserData };
-      const { user } = await loginUser(loginUserDto);
+      const loginUserDto = transformLoginUserToLoginUserDto(loginUserData);
+      const data = await loginUser(loginUserDto);
+      const user = transformUserDtoToUser(data);
 
       return user;
     },
@@ -35,7 +32,8 @@ export function useLoginMutation(
     onMutate,
 
     onSuccess: async (data, variables, onMutateResult, context) => {
-      localStorage.setItem('token', JSON.stringify(data.token));
+      queryClient.setQueryData(sessionQueryOptions.queryKey, data);
+      store.dispatch(setSession(data));
       await onSuccess?.(data, variables, onMutateResult, context);
     },
 

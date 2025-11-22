@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { pathKey } from '~shared/router';
 import { BaseRegisterForm } from '~features/session/register/register.ui';
 
-export function RegisterPage() {
+export default function RegisterPage() {
   return (
     <div className="auth-page">
       <div className="container page">
