@@ -1,31 +1,35 @@
-interface ArticlePermission {
+export interface ArticlePermission {
   create: boolean;
   read: boolean;
   update: boolean;
   delete: boolean;
   like: boolean;
   dislike: boolean;
-  [key: string]: boolean | undefined;
 }
 
-interface ProfilePermission {
+export interface ProfilePermission {
   follow: boolean;
   unfollow: boolean;
   update: boolean;
-  [key: string]: boolean | undefined;
 }
 
-interface CommentPermission {
+export interface CommentPermission {
   create: boolean;
   read: boolean;
   delete: boolean;
-  [key: string]: boolean | undefined;
 }
 
 export interface PermissionGroup {
   article: ArticlePermission;
   profile: ProfilePermission;
   comment: CommentPermission;
+}
+// 🎯 핵심: 리소스와 액션을 매핑
+
+export interface ResourceActionMap {
+  article: keyof ArticlePermission;
+  profile: keyof ProfilePermission;
+  comment: keyof CommentPermission;
 }
 
 export interface ArticleContext {
@@ -39,8 +43,9 @@ export interface ProfileContext {
 }
 export type Context = ArticleContext | CommentContent | ProfileContext;
 
-export type Action = keyof ArticlePermission | keyof ProfilePermission | keyof CommentPermission;
 export type Resource = keyof PermissionGroup;
+
+type Action = ResourceActionMap[Resource];
 
 export interface SessionPermission {
   guest: PermissionGroup;

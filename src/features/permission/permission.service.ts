@@ -4,13 +4,13 @@ import { selectSession } from '~entities/session/session.model';
 import type { User } from '~entities/session/session.type';
 import type {
   SessionPermission,
-  Action,
   Context,
   ArticleContext,
   CommentContent,
   ProfileContext,
   PermissionGroup,
   Resource,
+  ResourceActionMap,
 } from './permission.types';
 
 const DEFAULT_PERMISSION = {
@@ -115,38 +115,28 @@ function getRole(session: User | null | undefined, context?: Context): keyof Ses
   return 'user';
 }
 
-function getPermissionValue(permissions: PermissionGroup, resource: Resource, action: Action): boolean {
-  const resourcePermissions = permissions[resource];
-
-  if (resource === 'article') {
-    return resourcePermissions[action] ?? false;
-  }
-
-  if (resource === 'profile') {
-    return resourcePermissions[action] ?? false;
-  }
-
-  if (resource === 'comment') {
-    return resourcePermissions[action] ?? false;
-  }
-
-  return false;
-}
-
-export function useCanPerformAction(action: Action, resource: Resource, context?: Context): boolean {
+export function useCanPerformAction<R extends Resource>(
+  action: ResourceActionMap[R],
+  resource: R,
+  context?: Context,
+): boolean {
   const session = useSelector(selectSession);
   const role = getRole(session, context);
-
   const permissions = sessionPermission[role];
 
-  return getPermissionValue(permissions, resource, action);
+  const resourcePermissions = permissions[resource] as any;
+  return resourcePermissions[action] ?? false;
 }
 
-export function canPerformAction(action: Action, resource: Resource, context?: Context): boolean {
+export function canPerformAction<R extends Resource>(
+  action: ResourceActionMap[R],
+  resource: R,
+  context?: Context,
+): boolean {
   const { session } = store.getState();
   const role = getRole(session, context);
-
   const permissions = sessionPermission[role];
 
-  return getPermissionValue(permissions, resource, action);
+  const resourcePermissions = permissions[resource] as any;
+  return resourcePermissions[action] ?? false;
 }
