@@ -1,14 +1,14 @@
 import { combineSlices, configureStore } from '@reduxjs/toolkit';
 import { persistReducer, persistStore, FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
+import { sessionSlice } from '~entities/session/session.model';
 
-export interface LazyLoadedSlices {}
-
-export const rootReducer = combineSlices().withLazyLoadedSlices<LazyLoadedSlices>();
+export const rootReducer = combineSlices(sessionSlice);
 
 const persistConfig = {
   key: 'root',
   storage,
+  whitelist: ['session'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
