@@ -1,6 +1,5 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, type RouteObject } from 'react-router-dom';
 import { HomePage } from '~pages/home/Homepage';
-import { Layout } from '~pages/layouts/Layout';
 import { loginPageRoute } from '~pages/login/login-page.route';
 import { registerPageRoute } from '~pages/register/register-page.route';
 
@@ -11,7 +10,17 @@ export function BootstrappedRouter() {
 const browserRouter = createBrowserRouter([
   {
     path: '/',
-    Component: Layout,
-    children: [{ index: true, Component: HomePage }, registerPageRoute, loginPageRoute],
+    lazy: async () => ({
+      loader: (await import('~pages/layouts/layout.loader')).default,
+      Component: (await import('~pages/layouts/layout.ui')).default,
+    }),
+    children: [
+      {
+        index: true,
+        Component: HomePage,
+      },
+      registerPageRoute,
+      loginPageRoute,
+    ],
   },
-]);
+] satisfies RouteObject[]);
