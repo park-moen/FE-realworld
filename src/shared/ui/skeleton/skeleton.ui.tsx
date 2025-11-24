@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import cn from 'classnames';
+import { capitalize, isNumber } from '~shared/lib/utils';
 import * as styles from './skeleton.module.css';
 
 export function Skeleton(props: {
@@ -24,12 +25,4 @@ export function Skeleton(props: {
   };
 
   return <div className={classNames} style={st} />;
-}
-
-function isNumber(value: string | number): value is number {
-  return typeof value === 'number';
-}
-
-function capitalize(str: string): string {
-  return str.charAt(0).toUpperCase() + str.slice(1);
 }
