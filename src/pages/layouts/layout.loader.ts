@@ -5,7 +5,7 @@ import { sessionQueryOptions } from '~entities/session/session.api';
 
 export default async function appLoader(args: LoaderFunctionArgs) {
   if (store.getState()?.session?.token) {
-    queryClient.prefetchQuery(sessionQueryOptions);
+    await queryClient.prefetchQuery(sessionQueryOptions);
   }
 
   return args;

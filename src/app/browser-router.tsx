@@ -10,10 +10,10 @@ export function BootstrappedRouter() {
 const browserRouter = createBrowserRouter([
   {
     path: '/',
-    lazy: {
-      loader: async () => (await import('~pages/layouts/layout.loader')).default,
-      Component: async () => (await import('~pages/layouts/layout.ui')).default,
-    },
+    lazy: async () => ({
+      loader: (await import('~pages/layouts/layout.loader')).default,
+      Component: (await import('~pages/layouts/layout.ui')).default,
+    }),
     children: [
       {
         index: true,

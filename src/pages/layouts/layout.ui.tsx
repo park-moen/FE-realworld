@@ -107,7 +107,7 @@ function BrandLink() {
 
 function HomeLink() {
   return (
-    <NavLink className="navbar-link" to={pathKey.home}>
+    <NavLink className="nav-link" to={pathKey.home}>
       Home
     </NavLink>
   );
@@ -115,7 +115,7 @@ function HomeLink() {
 
 function SignInLink() {
   return (
-    <NavLink className="navbar-link" to={pathKey.login}>
+    <NavLink className="nav-link" to={pathKey.login}>
       Sign in
     </NavLink>
   );
@@ -123,7 +123,7 @@ function SignInLink() {
 
 function SignUpLink() {
   return (
-    <NavLink className="navbar-link" to={pathKey.register}>
+    <NavLink className="nav-link" to={pathKey.register}>
       Sign up
     </NavLink>
   );
@@ -131,7 +131,7 @@ function SignUpLink() {
 
 function NewArticleLink() {
   return (
-    <NavLink className="navbar-link" to={pathKey.register}>
+    <NavLink className="nav-link" to={pathKey.editor.root}>
       <IoCreateOutline size={16} /> &nbsp;New Article
     </NavLink>
   );
@@ -139,7 +139,7 @@ function NewArticleLink() {
 
 function SettingsProfileLink() {
   return (
-    <NavLink className="navbar-link" to={pathKey.editor.root}>
+    <NavLink className="nav-link" to={pathKey.settings}>
       <IoSettingsSharp size={16} /> &nbsp;Settings
     </NavLink>
   );
@@ -149,7 +149,7 @@ function ProfileLink() {
   const { data: user } = useSuspenseQuery(sessionQueryOptions);
 
   return (
-    <NavLink className="navbar-link" to={pathKey.profile.byUsername(user.username)}>
+    <NavLink className="nav-link" to={pathKey.profile.byUsername(user.username)}>
       <img className="user-pic" src={user.image ?? undefined} alt={user.username} /> {user.username}
     </NavLink>
   );
