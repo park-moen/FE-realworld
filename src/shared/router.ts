@@ -2,6 +2,7 @@ export const pathKey = {
   root: '/',
   login: '/login/',
   register: '/register/',
+  settings: '/settings/',
   home: '/',
   page404: '/404',
 
