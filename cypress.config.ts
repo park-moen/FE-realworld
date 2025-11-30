@@ -3,7 +3,19 @@ import axios from 'axios';
 import { defineConfig } from 'cypress';
 import * as dotenv from 'dotenv';
 
-dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
+if (process.env.NODE_ENV === 'development' && !process.env.CI) {
+  const envFile = `.env.${process.env.NODE_ENV || 'development'}`;
+  dotenv.config({ path: envFile });
+  console.log(`📋 Loading .env file: ${envFile}`);
+}
+
+const BASE_URL = process.env.BASE_URL || process.env.CYPRESS_BASE_URL || 'https://localhost:5173';
+const CYPRESS_API_URL = process.env.CYPRESS_API_URL || 'https://realworld-nest-prisma-production.up.railway.app/api';
+
+console.log(`🌐 BASE_URL: ${BASE_URL}`);
+console.log(`🔌 CYPRESS_API_URL: ${CYPRESS_API_URL}`);
+console.log(`🏗️  NODE_ENV: ${process.env.NODE_ENV}`);
+console.log(`🎯 CYPRESS_ENV: ${process.env.CYPRESS_ENV}`);
 
 export default defineConfig({
   e2e: {
@@ -28,7 +40,7 @@ export default defineConfig({
       return config;
     },
     env: {
-      apiUrl: process.env.API_URL,
+      apiUrl: `${BASE_URL}/api`,
     },
   },
 });
@@ -41,9 +53,11 @@ async function createE2ETestUser() {
     password: 'testpassword123',
   };
 
+  console.log(`🔌 Creating E2E user via: ${CYPRESS_API_URL}/users`);
+
   try {
     const response = await axios.post(
-      `${process.env.API_URL}/users`,
+      `${CYPRESS_API_URL}/users`,
       { user: userPayload },
       {
         headers: {
@@ -52,13 +66,20 @@ async function createE2ETestUser() {
       },
     );
 
+    console.log('✅ E2E test user created:', response.data.user.username);
+
     return {
       ...response.data.user,
       password: userPayload.password,
     };
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
-      throw new Error(`[createE2ETestUser] axios error:, ${error.response?.data || error.message}`);
+      console.error('❌ Failed to create E2E user:', {
+        status: error.response?.status,
+        data: error.response?.data,
+        message: error.message,
+      });
+      throw new Error(`[createE2ETestUser] axios error: ${JSON.stringify(error.response?.data || error.message)}`);
     } else if (error instanceof Error) {
       throw new Error(`[createE2ETestUser] error:', ${error.message}`);
     } else {
