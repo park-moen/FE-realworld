@@ -88,26 +88,35 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           start: npm run dev
-          wait-on: "http://localhost:5173"
+          wait-on: "https://localhost:5173"
           browser: chrome
+          config: baseUrl=https://localhost:5173
         env:
-          API_URL: ${{ secrets.API_URL }}
-          BASE_URL: http://localhost:5173
+          NODE_ENV: development
           CYPRESS_ENV: preview
-          NODE_ENV: CI
+          BASE_URL: https://localhost:5173
+          CYPRESS_API_URL: ${{ secrets.RAILWAY_API_URL }}
+          # 🔥 자체 서명 인증서 허용
+          NODE_TLS_REJECT_UNAUTHORIZED: "0"
+          CYPRESS_NODE_TLS_REJECT_UNAUTHORIZED: "0"
 
       - name: Run E2E Tests (Full)
         if: needs.prepare.outputs.e2e_scope != 'preview'
         uses: cypress-io/github-action@v6
         with:
           start: npm run dev
-          wait-on: "http://localhost:5173"
+          wait-on: "https://localhost:5173"
+          wait-on-timeout: 120
           browser: chrome
+          config: baseUrl=https://localhost:5173
         env:
-          API_URL: ${{ secrets.API_URL }}
-          BASE_URL: http://localhost:5173
+          NODE_ENV: development
           CYPRESS_ENV: debug
-          NODE_ENV: CI
+          BASE_URL: https://localhost:5173
+          CYPRESS_API_URL: ${{ secrets.RAILWAY_API_URL }}
+          # 🔥 자체 서명 인증서 허용
+          NODE_TLS_REJECT_UNAUTHORIZED: "0"
+          CYPRESS_NODE_TLS_REJECT_UNAUTHORIZED: "0"
 
   summary:
     runs-on: ubuntu-latest
