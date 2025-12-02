@@ -2,7 +2,7 @@
 import { AxiosError, type InternalAxiosRequestConfig } from 'axios';
 import { logger } from '~shared/lib/utils';
 import { store } from '~shared/store';
-import { api } from './api.instance';
+import { privateApi } from './api.instance';
 import { tokenManager, TokenManager } from './token-manger';
 
 export async function setupTokenManger(): Promise<void> {
@@ -11,7 +11,7 @@ export async function setupTokenManger(): Promise<void> {
 }
 
 export function setupApiInterceptors(): void {
-  api.interceptors.request.use(
+  privateApi.interceptors.request.use(
     (config) => {
       const { session } = store.getState();
 
@@ -36,7 +36,7 @@ export function setupApiInterceptors(): void {
     },
   );
 
-  api.interceptors.response.use(
+  privateApi.interceptors.response.use(
     (response) => response,
     async (error) => {
       const originalConfig: InternalAxiosRequestConfig = error.config;
@@ -75,7 +75,7 @@ export function setupApiInterceptors(): void {
         });
 
         // Step 4: 실패한 요청 재시도
-        return await api(updatedConfig);
+        return await privateApi(updatedConfig);
       } catch (refreshError) {
         logger.error('💥 Token refresh failed', { refreshError });
 
