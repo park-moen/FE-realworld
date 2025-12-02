@@ -1,10 +1,13 @@
 import type { AxiosRequestConfig } from 'axios';
+import { logger } from '~shared/lib/utils';
 import { api } from './api.instance';
 import {
   LoginUserDtoSchema,
+  RefreshResponseDtoSchema,
   RegisterUserDtoSchema,
   UserDtoSchema,
   type LoginUserDto,
+  type RefreshResponseDto,
   type RegisterUserDto,
   type UserDto,
 } from './api.schemas';
@@ -31,4 +34,28 @@ export async function getUser(config?: AxiosRequestConfig): Promise<UserDto> {
   const parsedResponse = UserDtoSchema.parse(response.data);
 
   return parsedResponse;
+}
+
+export async function refreshAccessToken(): Promise<RefreshResponseDto> {
+  logger.tokenRefreshStart('/users/refresh');
+
+  try {
+    const response = await api.post(
+      '/users/refresh',
+      {},
+      {
+        withCredentials: true,
+      },
+    );
+
+    const parsedResponse = RefreshResponseDtoSchema.parse(response.data);
+
+    logger.tokenRefreshSuccess('/users/refresh');
+    logger.info('🔑 New Access Token issued');
+
+    return parsedResponse;
+  } catch (error) {
+    logger.tokenRefreshFailed(error);
+    throw error;
+  }
 }
