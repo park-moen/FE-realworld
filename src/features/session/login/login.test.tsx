@@ -2,7 +2,7 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { BrowserRouter, useNavigate } from 'react-router-dom';
 import type { MockedFunction } from 'vitest';
-import { api } from '~shared/api/api.instance';
+import { privateApi } from '~shared/api/api.instance';
 import type { UserDto } from '~shared/api/api.schemas';
 import { renderWithQueryClient } from '~shared/lib/test/test.lib';
 import type { LoginUser } from './login.schema';
@@ -18,11 +18,11 @@ vi.mock('react-router-dom', async () => {
 });
 
 vi.mock('~shared/api/api.instance', () => ({
-  api: { post: vi.fn() },
+  privateApi: { post: vi.fn() },
 }));
 
 const mockedUseNavigate = useNavigate as MockedFunction<typeof useNavigate>;
-const mockedApiPost = api.post as MockedFunction<typeof api.post>;
+const mockedApiPost = privateApi.post as MockedFunction<typeof privateApi.post>;
 
 describe('LoginForm', () => {
   beforeEach(() => {

@@ -1,6 +1,6 @@
 import type { AxiosRequestConfig } from 'axios';
 import { logger } from '~shared/lib/utils';
-import { api } from './api.instance';
+import { privateApi, publicApi } from './api.instance';
 import {
   LoginUserDtoSchema,
   RefreshResponseDtoSchema,
@@ -14,7 +14,7 @@ import {
 
 export async function registerUser(registerUserDto: RegisterUserDto): Promise<UserDto> {
   const data = RegisterUserDtoSchema.parse(registerUserDto);
-  const response = await api.post('/users', data);
+  const response = await publicApi.post('/users', data);
   const parsedResponse = UserDtoSchema.parse(response.data);
 
   return parsedResponse;
@@ -22,7 +22,7 @@ export async function registerUser(registerUserDto: RegisterUserDto): Promise<Us
 
 export async function loginUser(loginUserDto: LoginUserDto): Promise<UserDto> {
   const data = LoginUserDtoSchema.parse(loginUserDto);
-  const response = await api.post('users/login', data);
+  const response = await privateApi.post('users/login', data);
   const parsedResponse = UserDtoSchema.parse(response.data);
 
   return parsedResponse;
@@ -30,7 +30,7 @@ export async function loginUser(loginUserDto: LoginUserDto): Promise<UserDto> {
 
 // ! 엔드포인트 users/user -> user로 변경해야함. real world docs 엔드포인트는 user로 지정함.
 export async function getUser(config?: AxiosRequestConfig): Promise<UserDto> {
-  const response = await api.get('/users/user', config);
+  const response = await privateApi.get('/users/user', config);
   const parsedResponse = UserDtoSchema.parse(response.data);
 
   return parsedResponse;
@@ -40,7 +40,7 @@ export async function refreshAccessToken(): Promise<RefreshResponseDto> {
   logger.tokenRefreshStart('/users/refresh');
 
   try {
-    const response = await api.post(
+    const response = await privateApi.post(
       '/users/refresh',
       {},
       {
