@@ -25,6 +25,13 @@ export const UserDtoSchema = z.object({
   }),
 });
 
+export const RefreshResponseDtoSchema = z.object({
+  user: z.object({
+    token: z.jwt(),
+  }),
+});
+
 export type RegisterUserDto = z.infer<typeof RegisterUserDtoSchema>;
 export type LoginUserDto = z.infer<typeof LoginUserDtoSchema>;
 export type UserDto = z.infer<typeof UserDtoSchema>;
+export type RefreshResponseDto = z.infer<typeof RefreshResponseDtoSchema>;
