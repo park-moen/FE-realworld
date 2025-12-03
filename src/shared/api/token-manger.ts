@@ -90,7 +90,7 @@ class TokenManager {
   }
 
   private retryAllPendingRequests(newAccessToken: string): void {
-    this.pendingRequests.forEach(({ config, resolve }, index) => {
+    this.pendingRequests.forEach(({ config, resolve }) => {
       config.headers.Authorization = `Bearer ${newAccessToken}`;
       resolve(config);
     });
