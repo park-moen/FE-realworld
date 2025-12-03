@@ -3,10 +3,12 @@ import { logger } from '~shared/lib/utils';
 import { privateApi, publicApi } from './api.instance';
 import {
   LoginUserDtoSchema,
+  ProfileDtoSchema,
   RefreshResponseDtoSchema,
   RegisterUserDtoSchema,
   UserDtoSchema,
   type LoginUserDto,
+  type ProfileDto,
   type RefreshResponseDto,
   type RegisterUserDto,
   type UserDto,
@@ -58,4 +60,11 @@ export async function refreshAccessToken(): Promise<RefreshResponseDto> {
     logger.tokenRefreshFailed(error);
     throw error;
   }
+}
+
+export async function getProfileByUsername(username: string, config?: AxiosRequestConfig): Promise<ProfileDto> {
+  const response = await privateApi.get(`/profiles/${username}`, config);
+  const parsedResponse = ProfileDtoSchema.parse(response.data);
+
+  return parsedResponse;
 }

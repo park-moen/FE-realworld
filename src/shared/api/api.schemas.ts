@@ -31,7 +31,17 @@ export const RefreshResponseDtoSchema = z.object({
   }),
 });
 
+export const ProfileDtoSchema = z.object({
+  profile: z.object({
+    username: z.string(),
+    bio: z.string(),
+    image: z.string(),
+    following: z.boolean(),
+  }),
+});
+
 export type RegisterUserDto = z.infer<typeof RegisterUserDtoSchema>;
 export type LoginUserDto = z.infer<typeof LoginUserDtoSchema>;
 export type UserDto = z.infer<typeof UserDtoSchema>;
 export type RefreshResponseDto = z.infer<typeof RefreshResponseDtoSchema>;
+export type ProfileDto = z.infer<typeof ProfileDtoSchema>;
