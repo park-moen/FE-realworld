@@ -17,3 +17,13 @@ export const ArticleSchema = z.object({
     // following: z.boolean(),
   }),
 });
+
+export const FilterQuerySchema = z.object({
+  page: z.coerce.number().int().positive({ error: 'Page must be a positive number' }),
+  limit: z.coerce.number().int().positive().max(100).default(20),
+  source: z.enum(['user', 'global']),
+
+  tag: z.string().optional(),
+  author: z.string().optional(),
+  favorited: z.string().optional(),
+});

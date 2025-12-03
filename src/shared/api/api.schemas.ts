@@ -60,6 +60,14 @@ export const ArticleDtoSchema = z.object({
   }),
 });
 
+export const FilterQueryDtoSchema = z.object({
+  limit: z.number().optional().default(20),
+  offset: z.number().optional().default(0),
+  tag: z.string().optional(),
+  author: z.string().optional(),
+  favorited: z.string().optional(),
+});
+
 export type RegisterUserDto = z.infer<typeof RegisterUserDtoSchema>;
 export type LoginUserDto = z.infer<typeof LoginUserDtoSchema>;
 export type UserDto = z.infer<typeof UserDtoSchema>;
@@ -68,3 +76,4 @@ export type RefreshResponseDto = z.infer<typeof RefreshResponseDtoSchema>;
 export type ProfileDto = z.infer<typeof ProfileDtoSchema>;
 
 export type ArticleDto = z.infer<typeof ArticleDtoSchema>;
+export type FilterQueryDto = z.infer<typeof FilterQueryDtoSchema>;

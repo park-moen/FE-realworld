@@ -1,5 +1,5 @@
-import type { ArticleDto } from '~shared/api/api.schemas';
-import type { Article } from './article.type';
+import type { ArticleDto, FilterQueryDto } from '~shared/api/api.schemas';
+import type { Article, FilterQuery } from './article.type';
 
 export function transformArticleDtoToArticle(articleDto: ArticleDto): Article {
   const { article } = articleDto;
@@ -13,5 +13,16 @@ export function transformArticleDtoToArticle(articleDto: ArticleDto): Article {
       image: article.author.image ?? '',
       bio: article.author.bio ?? '',
     },
+  };
+}
+
+export function transformFilterQueryToFilterQueryDto(filterQuery: FilterQuery): FilterQueryDto {
+  const { page, limit, source, ...otherParams } = filterQuery;
+  const offset = (page - 1) * limit;
+
+  return {
+    ...otherParams,
+    offset,
+    limit,
   };
 }
