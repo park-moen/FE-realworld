@@ -1,5 +1,4 @@
 import type { AxiosError, InternalAxiosRequestConfig } from 'axios';
-import { logger } from '~shared/lib/utils';
 import { pathKey } from '~shared/router';
 import { store } from '~shared/store';
 import { resetSession, setSession } from '~entities/session/session.model';
@@ -31,8 +30,6 @@ class TokenManager {
     error: AxiosAuthError,
     originalConfig: InternalAxiosRequestConfig,
   ): Promise<InternalAxiosRequestConfig> {
-    logger.accessTokenExpired(originalConfig.url || 'unknown');
-
     if (TokenManager.shouldLogout(error)) {
       TokenManager.handleLogout(error);
       throw error;
@@ -63,7 +60,6 @@ class TokenManager {
     }
 
     if (this.refreshState.status === 'refreshing') {
-      logger.debug('Reusing existing refresh promise');
       return this.refreshState.promise;
     }
 
@@ -88,21 +84,14 @@ class TokenManager {
   }
 
   private addToQueue(config: InternalAxiosRequestConfig): Promise<InternalAxiosRequestConfig> {
-    logger.queueRequest(config.url || 'unknown', this.pendingRequests.length + 1);
-
     return new Promise((resolve, reject) => {
       this.pendingRequests.push({ config, resolve, reject });
     });
   }
 
   private retryAllPendingRequests(newAccessToken: string): void {
-    logger.info('Retrying all pending requests', {
-      queueSize: this.pendingRequests.length,
-    });
-
-    this.pendingRequests.forEach(({ config, resolve }, index) => {
+    this.pendingRequests.forEach(({ config, resolve }) => {
       config.headers.Authorization = `Bearer ${newAccessToken}`;
-      logger.retryRequest(config.url || 'unknown', index + 1);
       resolve(config);
     });
 
@@ -110,11 +99,6 @@ class TokenManager {
   }
 
   private rejectAllPendingRequests(error: unknown): void {
-    logger.error('Rejecting all pending requests', {
-      queueSize: this.pendingRequests.length,
-      error: error instanceof Error ? error.message : String(error),
-    });
-
     this.pendingRequests.forEach(({ reject }) => {
       reject(error);
     });
@@ -139,7 +123,6 @@ class TokenManager {
   static handleLogout(error: AxiosAuthError): void {
     const authError = parseAuthError(error);
 
-    logger.refreshTokenExpired();
     store.dispatch(resetSession());
 
     const currentPath = window.location.pathname;
