@@ -3,12 +3,14 @@ import { logger } from '~shared/lib/utils';
 import { privateApi, publicApi } from './api.instance';
 import {
   ArticleDtoSchema,
+  ArticlesDtoSchema,
   LoginUserDtoSchema,
   ProfileDtoSchema,
   RefreshResponseDtoSchema,
   RegisterUserDtoSchema,
   UserDtoSchema,
   type ArticleDto,
+  type ArticlesDto,
   type LoginUserDto,
   type ProfileDto,
   type RefreshResponseDto,
@@ -74,6 +76,13 @@ export async function getProfileByUsername(username: string, config?: AxiosReque
 export async function getArticleBySlug(slug: string, config?: AxiosRequestConfig): Promise<ArticleDto> {
   const response = await privateApi.get(`/articles/${slug}`, config);
   const parsedResponse = ArticleDtoSchema.parse(response.data);
+
+  return parsedResponse;
+}
+
+export async function getAllArticles(config?: AxiosRequestConfig): Promise<ArticlesDto> {
+  const response = await privateApi.get('/articles', config);
+  const parsedResponse = ArticlesDtoSchema.parse(response.data);
 
   return parsedResponse;
 }

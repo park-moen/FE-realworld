@@ -18,6 +18,11 @@ export const ArticleSchema = z.object({
   }),
 });
 
+export const ArticlesSchema = z.object({
+  articles: z.record(z.string(), ArticleSchema),
+  articlesCount: z.number(),
+});
+
 export const FilterQuerySchema = z.object({
   page: z.coerce.number().int().positive({ error: 'Page must be a positive number' }),
   limit: z.coerce.number().int().positive().max(100).default(20),

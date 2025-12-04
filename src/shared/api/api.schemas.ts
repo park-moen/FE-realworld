@@ -60,6 +60,11 @@ export const ArticleDtoSchema = z.object({
   }),
 });
 
+export const ArticlesDtoSchema = z.object({
+  articles: z.array(ArticleDtoSchema.shape.article),
+  articlesCount: z.number(),
+});
+
 export const FilterQueryDtoSchema = z.object({
   limit: z.number().optional().default(20),
   offset: z.number().optional().default(0),
@@ -76,4 +81,5 @@ export type RefreshResponseDto = z.infer<typeof RefreshResponseDtoSchema>;
 export type ProfileDto = z.infer<typeof ProfileDtoSchema>;
 
 export type ArticleDto = z.infer<typeof ArticleDtoSchema>;
+export type ArticlesDto = z.infer<typeof ArticlesDtoSchema>;
 export type FilterQueryDto = z.infer<typeof FilterQueryDtoSchema>;

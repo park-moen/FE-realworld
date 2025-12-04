@@ -1,5 +1,5 @@
-import type { ArticleDto, FilterQueryDto } from '~shared/api/api.schemas';
-import type { Article, FilterQuery } from './article.type';
+import type { ArticleDto, ArticlesDto, FilterQueryDto } from '~shared/api/api.schemas';
+import type { Article, Articles, FilterQuery } from './article.type';
 
 export function transformArticleDtoToArticle(articleDto: ArticleDto): Article {
   const { article } = articleDto;
@@ -13,6 +13,15 @@ export function transformArticleDtoToArticle(articleDto: ArticleDto): Article {
       image: article.author.image ?? '',
       bio: article.author.bio ?? '',
     },
+  };
+}
+
+export function transformArticlesDtoToArticles(articlesDto: ArticlesDto): Articles {
+  const { articles, articlesCount } = articlesDto;
+
+  return {
+    articles: Object.fromEntries(articles.map((article) => [article.slug, transformArticleDtoToArticle({ article })])),
+    articlesCount,
   };
 }
 
