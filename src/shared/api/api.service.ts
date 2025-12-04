@@ -77,6 +77,13 @@ export async function getProfileByUsername(username: string, config?: AxiosReque
   return parsedResponse;
 }
 
+export async function followProfile(username: string, config?: AxiosRequestConfig): Promise<ProfileDto> {
+  const response = await privateApi.post(`/profiles/${username}/follow`, {}, config);
+  const parsedResponse = ProfileDtoSchema.parse(response.data);
+
+  return parsedResponse;
+}
+
 export async function getArticleBySlug(slug: string, config?: AxiosRequestConfig): Promise<ArticleDto> {
   const response = await privateApi.get(`/articles/${slug}`, config);
   const parsedResponse = ArticleDtoSchema.parse(response.data);
