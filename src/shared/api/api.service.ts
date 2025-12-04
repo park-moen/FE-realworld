@@ -86,3 +86,10 @@ export async function getAllArticles(config?: AxiosRequestConfig): Promise<Artic
 
   return parsedResponse;
 }
+
+export async function getFeedArticles(config?: AxiosRequestConfig): Promise<ArticlesDto> {
+  const response = await privateApi.get('/articles/feed', config);
+  const parsedResponse = ArticlesDtoSchema.parse(response.data);
+
+  return parsedResponse;
+}
