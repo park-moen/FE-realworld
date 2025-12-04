@@ -4,6 +4,7 @@ import { privateApi, publicApi } from './api.instance';
 import {
   ArticleDtoSchema,
   ArticlesDtoSchema,
+  CommentsDtoSchema,
   LoginUserDtoSchema,
   ProfileDtoSchema,
   RefreshResponseDtoSchema,
@@ -12,6 +13,7 @@ import {
   UserDtoSchema,
   type ArticleDto,
   type ArticlesDto,
+  type CommentsDto,
   type LoginUserDto,
   type ProfileDto,
   type RefreshResponseDto,
@@ -92,6 +94,13 @@ export async function getAllArticles(config?: AxiosRequestConfig): Promise<Artic
 export async function getFeedArticles(config?: AxiosRequestConfig): Promise<ArticlesDto> {
   const response = await privateApi.get('/articles/feed', config);
   const parsedResponse = ArticlesDtoSchema.parse(response.data);
+
+  return parsedResponse;
+}
+
+export async function getAllCommentsBySlug(slug: string, config?: AxiosRequestConfig): Promise<CommentsDto> {
+  const response = await privateApi.get(`/articles/${slug}/comments`, config);
+  const parsedResponse = CommentsDtoSchema.parse(response.data);
 
   return parsedResponse;
 }
