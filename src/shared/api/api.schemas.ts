@@ -73,6 +73,20 @@ export const FilterQueryDtoSchema = z.object({
   favorited: z.string().optional(),
 });
 
+export const CommentDtoSchema = z.object({
+  comment: z.object({
+    id: z.uuid(),
+    createdAt: z.iso.datetime(),
+    updatedAt: z.iso.datetime(),
+    body: z.string(),
+    author: ProfileDtoSchema.shape.profile,
+  }),
+});
+
+export const CommentsDtoSchema = z.object({
+  comments: z.array(CommentDtoSchema.shape.comment),
+});
+
 export const TagsDtoSchema = z.object({
   tags: z.array(z.string()),
 });
@@ -87,5 +101,8 @@ export type ProfileDto = z.infer<typeof ProfileDtoSchema>;
 export type ArticleDto = z.infer<typeof ArticleDtoSchema>;
 export type ArticlesDto = z.infer<typeof ArticlesDtoSchema>;
 export type FilterQueryDto = z.infer<typeof FilterQueryDtoSchema>;
+
+export type CommentDto = z.infer<typeof CommentDtoSchema>;
+export type CommentsDto = z.infer<typeof CommentsDtoSchema>;
 
 export type TagsDto = z.infer<typeof TagsDtoSchema>;
