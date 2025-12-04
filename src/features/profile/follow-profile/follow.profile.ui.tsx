@@ -9,9 +9,16 @@ export function FollowUserButton({ username }: { username: string }) {
   };
 
   return (
-    <Button color="secondary" variant="outline" className="action-btn" onClick={handleClick} data-test="follow-button">
+    <Button
+      color="secondary"
+      variant="outline"
+      className="action-btn"
+      onClick={handleClick}
+      data-test="follow-button"
+      aria-label={`Follow ${username}`}
+    >
       <IoAdd size={16} />
-      &nbsp; Follow {username}
+      Follow {username}
     </Button>
   );
 }
