@@ -1,12 +1,16 @@
-import type { AxiosRequestConfig } from 'axios';
+import { type AxiosRequestConfig } from 'axios';
 import { logger } from '~shared/lib/utils';
 import { privateApi, publicApi } from './api.instance';
 import {
+  ArticleDtoSchema,
+  ArticlesDtoSchema,
   LoginUserDtoSchema,
   ProfileDtoSchema,
   RefreshResponseDtoSchema,
   RegisterUserDtoSchema,
   UserDtoSchema,
+  type ArticleDto,
+  type ArticlesDto,
   type LoginUserDto,
   type ProfileDto,
   type RefreshResponseDto,
@@ -65,6 +69,27 @@ export async function refreshAccessToken(): Promise<RefreshResponseDto> {
 export async function getProfileByUsername(username: string, config?: AxiosRequestConfig): Promise<ProfileDto> {
   const response = await privateApi.get(`/profiles/${username}`, config);
   const parsedResponse = ProfileDtoSchema.parse(response.data);
+
+  return parsedResponse;
+}
+
+export async function getArticleBySlug(slug: string, config?: AxiosRequestConfig): Promise<ArticleDto> {
+  const response = await privateApi.get(`/articles/${slug}`, config);
+  const parsedResponse = ArticleDtoSchema.parse(response.data);
+
+  return parsedResponse;
+}
+
+export async function getAllArticles(config?: AxiosRequestConfig): Promise<ArticlesDto> {
+  const response = await privateApi.get('/articles', config);
+  const parsedResponse = ArticlesDtoSchema.parse(response.data);
+
+  return parsedResponse;
+}
+
+export async function getFeedArticles(config?: AxiosRequestConfig): Promise<ArticlesDto> {
+  const response = await privateApi.get('/articles/feed', config);
+  const parsedResponse = ArticlesDtoSchema.parse(response.data);
 
   return parsedResponse;
 }

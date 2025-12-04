@@ -40,8 +40,46 @@ export const ProfileDtoSchema = z.object({
   }),
 });
 
+export const ArticleDtoSchema = z.object({
+  article: z.object({
+    slug: z.string(),
+    title: z.string(),
+    description: z.string(),
+    body: z.string(),
+    createdAt: z.iso.datetime(),
+    updatedAt: z.iso.datetime(),
+    favorited: z.boolean().nullable(),
+    favoritesCount: z.number().nullable(),
+    tags: z.string().array(),
+    author: z.object({
+      username: z.string(),
+      bio: z.string().nullable(),
+      image: z.string().nullable(),
+      // following: z.boolean(),
+    }),
+  }),
+});
+
+export const ArticlesDtoSchema = z.object({
+  articles: z.array(ArticleDtoSchema.shape.article),
+  articlesCount: z.number(),
+});
+
+export const FilterQueryDtoSchema = z.object({
+  limit: z.number().optional().default(20),
+  offset: z.number().optional().default(0),
+  tag: z.string().optional(),
+  author: z.string().optional(),
+  favorited: z.string().optional(),
+});
+
 export type RegisterUserDto = z.infer<typeof RegisterUserDtoSchema>;
 export type LoginUserDto = z.infer<typeof LoginUserDtoSchema>;
 export type UserDto = z.infer<typeof UserDtoSchema>;
 export type RefreshResponseDto = z.infer<typeof RefreshResponseDtoSchema>;
+
 export type ProfileDto = z.infer<typeof ProfileDtoSchema>;
+
+export type ArticleDto = z.infer<typeof ArticleDtoSchema>;
+export type ArticlesDto = z.infer<typeof ArticlesDtoSchema>;
+export type FilterQueryDto = z.infer<typeof FilterQueryDtoSchema>;
