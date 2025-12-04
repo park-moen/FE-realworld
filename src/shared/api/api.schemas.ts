@@ -73,6 +73,10 @@ export const FilterQueryDtoSchema = z.object({
   favorited: z.string().optional(),
 });
 
+export const TagsDtoSchema = z.object({
+  tags: z.array(z.string()),
+});
+
 export type RegisterUserDto = z.infer<typeof RegisterUserDtoSchema>;
 export type LoginUserDto = z.infer<typeof LoginUserDtoSchema>;
 export type UserDto = z.infer<typeof UserDtoSchema>;
@@ -83,3 +87,5 @@ export type ProfileDto = z.infer<typeof ProfileDtoSchema>;
 export type ArticleDto = z.infer<typeof ArticleDtoSchema>;
 export type ArticlesDto = z.infer<typeof ArticlesDtoSchema>;
 export type FilterQueryDto = z.infer<typeof FilterQueryDtoSchema>;
+
+export type TagsDto = z.infer<typeof TagsDtoSchema>;

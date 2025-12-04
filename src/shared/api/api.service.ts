@@ -8,6 +8,7 @@ import {
   ProfileDtoSchema,
   RefreshResponseDtoSchema,
   RegisterUserDtoSchema,
+  TagsDtoSchema,
   UserDtoSchema,
   type ArticleDto,
   type ArticlesDto,
@@ -15,6 +16,7 @@ import {
   type ProfileDto,
   type RefreshResponseDto,
   type RegisterUserDto,
+  type TagsDto,
   type UserDto,
 } from './api.schemas';
 
@@ -90,6 +92,13 @@ export async function getAllArticles(config?: AxiosRequestConfig): Promise<Artic
 export async function getFeedArticles(config?: AxiosRequestConfig): Promise<ArticlesDto> {
   const response = await privateApi.get('/articles/feed', config);
   const parsedResponse = ArticlesDtoSchema.parse(response.data);
+
+  return parsedResponse;
+}
+
+export async function getAllTags(config?: AxiosRequestConfig): Promise<TagsDto> {
+  const response = await publicApi.get('/tags', config);
+  const parsedResponse = TagsDtoSchema.parse(response.data);
 
   return parsedResponse;
 }
