@@ -84,6 +84,13 @@ export async function followProfile(username: string, config?: AxiosRequestConfi
   return parsedResponse;
 }
 
+export async function unfollowProfile(username: string, config?: AxiosRequestConfig): Promise<ProfileDto> {
+  const response = await privateApi.delete(`/profiles/${username}/follow`, config);
+  const parsedResponse = ProfileDtoSchema.parse(response.data);
+
+  return parsedResponse;
+}
+
 export async function getArticleBySlug(slug: string, config?: AxiosRequestConfig): Promise<ArticleDto> {
   const response = await privateApi.get(`/articles/${slug}`, config);
   const parsedResponse = ArticleDtoSchema.parse(response.data);
