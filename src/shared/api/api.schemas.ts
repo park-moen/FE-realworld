@@ -87,6 +87,12 @@ export const CommentsDtoSchema = z.object({
   comments: z.array(CommentDtoSchema.shape.comment),
 });
 
+export const CreateCommentDtoSchema = z.object({
+  comment: z.object({
+    body: z.string().min(1),
+  }),
+});
+
 export const TagsDtoSchema = z.object({
   tags: z.array(z.string()),
 });
@@ -104,5 +110,6 @@ export type FilterQueryDto = z.infer<typeof FilterQueryDtoSchema>;
 
 export type CommentDto = z.infer<typeof CommentDtoSchema>;
 export type CommentsDto = z.infer<typeof CommentsDtoSchema>;
+export type CreateCommentDto = z.infer<typeof CreateCommentDtoSchema>;
 
 export type TagsDto = z.infer<typeof TagsDtoSchema>;
