@@ -54,13 +54,16 @@ export default defineConfig(({ mode }) => {
       environment: 'jsdom',
       setupFiles: ['./src/shared/lib/test/setup.ts'],
       globals: true,
+      env: {
+        VITE_API_URL: '/api', // ← 이것을 추가!
+      },
       include: ['src/**/*.{spec,test}.{ts,tsx,js,jsx}'],
       coverage: {
         provider: 'v8',
         reporter: ['text', 'lcov'],
         reportsDirectory: './coverage',
         include: ['src/**/*.{ts,tsx}'],
-        exclude: ['src/**/*.d.ts', 'src/**/*.stories.tsx'],
+        exclude: ['src/**/*.d.ts', 'src/**/*.stories.tsx', 'node_modules/', '**/*.config.{ts,js}'],
       },
     },
   };
