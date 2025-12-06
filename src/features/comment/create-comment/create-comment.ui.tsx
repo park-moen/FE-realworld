@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { ErrorBoundary } from 'react-error-boundary';
 import { useForm } from 'react-hook-form';
+import { getErrorMessage } from '~shared/lib/utils';
 import { logError } from '~shared/ui/error-handler/error-handler.lib';
 import { ErrorHandler } from '~shared/ui/error-handler/error-handler.ui';
 import { sessionQueryOptions } from '~entities/session/session.api';
@@ -47,7 +48,7 @@ function BaseCreateCommentFrom({ slug }: CreateCommentFormProps) {
     },
   });
 
-  const mutationErrors = (error?.response?.data || [error?.message]) as string[];
+  const mutationErrors = getErrorMessage(error);
   const canSubmit = [isDirty, isValid, !isPending].every(Boolean);
 
   const onValid = (createComment: CreateComment) => {
