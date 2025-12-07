@@ -17,6 +17,15 @@ interface IUserRegisterRequest {
   };
 }
 
+interface IArticleCreateRequest {
+  article: {
+    title: string;
+    description: string;
+    body: string;
+    tagList?: string[];
+  };
+}
+
 const API_URL = import.meta.env.VITE_API_URL;
 
 export const handlers = [
@@ -85,6 +94,32 @@ export const handlers = [
       },
     }),
   ),
+
+  http.post(`${API_URL}/articles`, async ({ request }) => {
+    const {
+      article: { title, description, body, tagList },
+    } = (await request.json()) as IArticleCreateRequest;
+    const slug = title.toLocaleLowerCase().replace(/\s+/g, '-');
+
+    return HttpResponse.json({
+      article: {
+        slug,
+        title,
+        description,
+        body,
+        tags: tagList || [],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        favorited: false,
+        favoritesCount: 42,
+        author: {
+          username: 'testUser',
+          bio: 'This is a mock bio of the author.',
+          image: 'https://example.com/mock-image.jpg',
+        },
+      },
+    });
+  }),
 
   http.post(`${API_URL}/articles/:slug/comments`, async ({ request }) => {
     const body = await request.json();
