@@ -106,6 +106,8 @@ export const handlers = [
     });
   }),
 
+  http.delete(`${API_URL}/articles/:slug/comments/:id`, () => new HttpResponse(null, { status: 204 })),
+
   http.get(`${API_URL}/articles/:slug/comments`, () =>
     HttpResponse.json({
       comments: [],
