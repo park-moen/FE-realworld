@@ -6,6 +6,7 @@ import {
   ArticlesDtoSchema,
   CommentDtoSchema,
   CommentsDtoSchema,
+  CreateArticleDtoSchema,
   CreateCommentDtoSchema,
   LoginUserDtoSchema,
   ProfileDtoSchema,
@@ -16,6 +17,7 @@ import {
   type ArticleDto,
   type ArticlesDto,
   type CommentsDto,
+  type CreateArticleDto,
   type CreateCommentDto,
   type LoginUserDto,
   type ProfileDto,
@@ -111,6 +113,17 @@ export async function getAllArticles(config?: AxiosRequestConfig): Promise<Artic
 export async function getFeedArticles(config?: AxiosRequestConfig): Promise<ArticlesDto> {
   const response = await privateApi.get('/articles/feed', config);
   const parsedResponse = ArticlesDtoSchema.parse(response.data);
+
+  return parsedResponse;
+}
+
+export async function createArticle(
+  createArticleDto: CreateArticleDto,
+  config?: AxiosRequestConfig,
+): Promise<ArticleDto> {
+  const data = CreateArticleDtoSchema.parse(createArticleDto);
+  const response = await privateApi.post('/articles', data, config);
+  const parsedResponse = ArticleDtoSchema.parse(response.data);
 
   return parsedResponse;
 }
