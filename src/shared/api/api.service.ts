@@ -130,6 +130,10 @@ export async function createComment(slug: string, createCommentDto: CreateCommen
   return parsedResponse;
 }
 
+export async function deleteComment(slug: string, commentId: string, config?: AxiosRequestConfig) {
+  return privateApi.delete(`/articles/${slug}/comments/${commentId}`, config);
+}
+
 export async function getAllTags(config?: AxiosRequestConfig): Promise<TagsDto> {
   const response = await publicApi.get('/tags', config);
   const parsedResponse = TagsDtoSchema.parse(response.data);
