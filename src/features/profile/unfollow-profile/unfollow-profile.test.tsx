@@ -1,34 +1,46 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { BrowserRouter } from 'react-router-dom';
-import type { MockedFunction } from 'vitest';
-import { privateApi } from '~shared/api/api.instance';
+import { http, HttpResponse } from 'msw';
+import { MemoryRouter } from 'react-router-dom';
+import { server } from '~shared/lib/mocks/server';
 import { renderWithQueryClient } from '~shared/lib/test/test.lib';
 import { UnfollowUserProfile } from './unfollow-profile.ui';
 
-vi.mock('~shared/api/api.instance', () => ({
-  privateApi: { delete: vi.fn() },
-}));
-
-const mockedApiDelete = privateApi.delete as MockedFunction<typeof privateApi.delete>;
-
-const username = 'mockUser';
+const TEST_USERNAME = 'testuser';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 describe('UnfollowUserButton Component', () => {
   it('should display the button with the correct text', () => {
     renderUnfollowUserButton();
 
-    expect(screen.getByRole('button', { name: `Unfollow ${username}` })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: `Unfollow ${TEST_USERNAME}` })).toBeInTheDocument();
   });
 
-  it('should call the mutate function with the unfollowed profile when clicked', async () => {
-    mockedApiDelete.mockResolvedValue({});
-
+  it('should successfully unfollow user and call API with correct username', async () => {
     const { click } = renderUnfollowUserButton();
+    let capturedUsername = '';
 
-    await click(screen.getByRole('button', { name: `Unfollow ${username}` }));
+    server.use(
+      http.delete(`${API_URL}/profiles/:username/follow`, async ({ params }) => {
+        capturedUsername = params.username as string;
+
+        return HttpResponse.json({
+          profile: {
+            username: params.username,
+            bio: 'Test bio',
+            image: 'https://api.realworld.io/images/demo-avatar.png',
+            following: false,
+          },
+        });
+      }),
+    );
+
+    const unfollowButton = screen.getByRole('button', { name: `Unfollow ${TEST_USERNAME}` });
+    await click(unfollowButton);
+
     await waitFor(() => {
-      expect(mockedApiDelete).toHaveBeenCalled();
+      expect(capturedUsername).toBe(TEST_USERNAME);
+      expect(unfollowButton).toBeInTheDocument();
     });
   });
 });
@@ -36,9 +48,9 @@ describe('UnfollowUserButton Component', () => {
 function renderUnfollowUserButton() {
   const user = userEvent.setup();
   const renderResult = renderWithQueryClient(
-    <BrowserRouter>
-      <UnfollowUserProfile username={username} />
-    </BrowserRouter>,
+    <MemoryRouter>
+      <UnfollowUserProfile username={TEST_USERNAME} />
+    </MemoryRouter>,
   );
 
   return { ...user, renderResult };

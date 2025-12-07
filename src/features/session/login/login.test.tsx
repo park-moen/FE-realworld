@@ -1,12 +1,15 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { BrowserRouter, useNavigate } from 'react-router-dom';
+import { http, HttpResponse } from 'msw';
+import { MemoryRouter, useNavigate } from 'react-router-dom';
 import type { MockedFunction } from 'vitest';
-import { privateApi } from '~shared/api/api.instance';
 import type { UserDto } from '~shared/api/api.schemas';
+import { server } from '~shared/lib/mocks/server';
 import { renderWithQueryClient } from '~shared/lib/test/test.lib';
 import type { LoginUser } from './login.schema';
 import LoginForm from './login.ui';
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual<typeof import('react-router-dom')>('react-router-dom');
@@ -17,12 +20,7 @@ vi.mock('react-router-dom', async () => {
   };
 });
 
-vi.mock('~shared/api/api.instance', () => ({
-  privateApi: { post: vi.fn() },
-}));
-
 const mockedUseNavigate = useNavigate as MockedFunction<typeof useNavigate>;
-const mockedApiPost = privateApi.post as MockedFunction<typeof privateApi.post>;
 
 describe('LoginForm', () => {
   beforeEach(() => {
@@ -49,7 +47,25 @@ describe('LoginForm', () => {
   });
 
   it('should call login mutation on valid form submission', async () => {
-    mockedApiPost.mockResolvedValue({});
+    let apiCalled = false;
+
+    server.use(
+      http.post(`${API_URL}/users/login`, async ({ request }) => {
+        apiCalled = true;
+        const body = await request.json();
+        const { user } = body as { user: { email: string; password: string } };
+
+        return HttpResponse.json({
+          user: {
+            username: 'testuser',
+            email: user.email,
+            token: 'mock-jwt-token',
+            bio: 'Test bio',
+            image: 'https://api.realworld.io/images/demo-avatar.png',
+          },
+        });
+      }),
+    );
 
     const { click, type } = renderLoginForm();
 
@@ -58,15 +74,15 @@ describe('LoginForm', () => {
     await click(screen.getByRole('button', { name: /sign in/i }));
 
     await waitFor(() => {
-      expect(mockedApiPost).toHaveBeenCalled();
+      expect(apiCalled).toBe(true);
     });
   });
 
   it('should navigate to profile on successful login', async () => {
     const navigate = vi.fn();
-
     mockedUseNavigate.mockReturnValue(navigate);
-    mockedApiPost.mockResolvedValue({ data: mockUserDto });
+
+    server.use(http.post(`${API_URL}/users/login`, () => HttpResponse.json(mockUserDto)));
 
     const { click, type } = renderLoginForm();
 
@@ -80,7 +96,18 @@ describe('LoginForm', () => {
   });
 
   it('should display error message on login failure', async () => {
-    mockedApiPost.mockRejectedValue(new Error('Request failed'));
+    server.use(
+      http.post(`${API_URL}/users/login`, () =>
+        HttpResponse.json(
+          {
+            errors: {
+              body: ['User body is required'],
+            },
+          },
+          { status: 401 },
+        ),
+      ),
+    );
 
     const { click, type } = renderLoginForm();
 
@@ -89,7 +116,8 @@ describe('LoginForm', () => {
     await click(screen.getByRole('button', { name: /sign in/i }));
 
     await waitFor(() => {
-      expect(screen.getByText(/Request failed/i)).toBeInTheDocument();
+      const errorList = screen.getByRole('list');
+      expect(errorList).toHaveClass('error-messages');
     });
   });
 });
@@ -97,9 +125,9 @@ describe('LoginForm', () => {
 function renderLoginForm() {
   const user = userEvent.setup();
   const renderResult = renderWithQueryClient(
-    <BrowserRouter>
+    <MemoryRouter>
       <LoginForm />
-    </BrowserRouter>,
+    </MemoryRouter>,
   );
 
   return { ...user, ...renderResult };

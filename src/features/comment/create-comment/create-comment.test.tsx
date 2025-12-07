@@ -2,7 +2,7 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { http, HttpResponse } from 'msw';
-import { BrowserRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { server } from '~shared/lib/mocks/server';
 import { renderWithQueryClient } from '~shared/lib/test/test.lib';
@@ -136,9 +136,9 @@ describe('reate Comment Form', () => {
 function renderCreateCommentForm() {
   const user = userEvent.setup();
   const renderResult = renderWithQueryClient(
-    <BrowserRouter>
+    <MemoryRouter>
       <CreateCommentForm slug="test-slug" />
-    </BrowserRouter>,
+    </MemoryRouter>,
   );
 
   return { ...user, ...renderResult };
