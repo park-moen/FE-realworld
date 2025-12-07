@@ -3,6 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { ErrorBoundary } from 'react-error-boundary';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import { getErrorMessage } from '~shared/lib/utils';
 import { pathKey } from '~shared/router';
 import { logError } from '~shared/ui/error-handler/error-handler.lib';
 import { ErrorHandler } from '~shared/ui/error-handler/error-handler.ui';
@@ -36,7 +37,7 @@ function BaseRegisterForm() {
     },
   });
 
-  const mutationErrors = (error?.response?.data || [error?.message]) as string[];
+  const mutationErrors = getErrorMessage(error);
   const canSubmit = [isDirty, isValid, !isPending].every(Boolean);
 
   const onValid = (registerUser: RegisterUser) => {
