@@ -1,6 +1,22 @@
 import { randomUUID } from 'crypto';
 import { http, HttpResponse } from 'msw';
 
+interface IUserLoginRequest {
+  user: {
+    email: string;
+    password: string;
+  };
+}
+
+interface IUserRegisterRequest {
+  user: {
+    username: string;
+    email: string;
+    bio: string | null;
+    image: string | null;
+  };
+}
+
 const API_URL = import.meta.env.VITE_API_URL;
 
 export const handlers = [
@@ -12,6 +28,60 @@ export const handlers = [
         token: 'mock-jwt-token',
         bio: 'Test bio',
         image: 'https://api.realworld.io/images/demo-avatar.png',
+      },
+    }),
+  ),
+
+  http.post(`${API_URL}/users`, async ({ request }) => {
+    const {
+      user: { username, email, bio, image },
+    } = (await request.json()) as IUserRegisterRequest;
+
+    return HttpResponse.json({
+      user: {
+        username,
+        email,
+        token: 'mock-jwt-token',
+        bio: bio ?? '',
+        image: image ?? '',
+      },
+    });
+  }),
+
+  http.post(`${API_URL}/users/login`, async ({ request }) => {
+    const {
+      user: { email },
+    } = (await request.json()) as IUserLoginRequest;
+
+    return HttpResponse.json({
+      user: {
+        username: 'testuser',
+        email,
+        token: 'mock-jwt-token',
+        bio: 'Test bio',
+        image: 'https://api.realworld.io/images/demo-avatar.png',
+      },
+    });
+  }),
+
+  http.post(`${API_URL}/profiles/:username/follow`, async ({ params }) =>
+    HttpResponse.json({
+      profile: {
+        username: params.username,
+        bio: 'Test bio',
+        image: 'https://api.realworld.io/images/demo-avatar.png',
+        following: true,
+      },
+    }),
+  ),
+
+  http.delete(`${API_URL}/profiles/:username/follow`, async ({ params }) =>
+    HttpResponse.json({
+      profile: {
+        username: params.username,
+        bio: 'Test bio',
+        image: 'https://api.realworld.io/images/demo-avatar.png',
+        following: false,
       },
     }),
   ),
