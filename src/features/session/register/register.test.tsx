@@ -1,12 +1,15 @@
 import { screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
-import { BrowserRouter, useNavigate } from 'react-router-dom';
+import { http, HttpResponse } from 'msw';
+import { MemoryRouter, useNavigate } from 'react-router-dom';
 import type { MockedFunction } from 'vitest';
-import { publicApi } from '~shared/api/api.instance';
 import type { UserDto } from '~shared/api/api.schemas';
+import { server } from '~shared/lib/mocks/server';
 import { renderWithQueryClient } from '~shared/lib/test/test.lib';
 import type { RegisterUser } from './register.schema';
 import RegisterForm from './register.ui';
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual<typeof import('react-router-dom')>('react-router-dom');
@@ -17,12 +20,7 @@ vi.mock('react-router-dom', async () => {
   };
 });
 
-vi.mock('~shared/api/api.instance', () => ({
-  publicApi: { post: vi.fn() },
-}));
-
 const mockedUseNavigate = useNavigate as MockedFunction<typeof useNavigate>;
-const mockedApiPost = publicApi.post as MockedFunction<typeof publicApi.post>;
 
 describe('RegisterForm', () => {
   beforeEach(() => {
@@ -51,9 +49,18 @@ describe('RegisterForm', () => {
   });
 
   it('submits the form and navigates to profile page on successful registration', async () => {
+    let apiCalled = false;
+
     const navigate = vi.fn();
     mockedUseNavigate.mockReturnValue(navigate);
-    mockedApiPost.mockResolvedValue({ data: mockUserDto });
+
+    server.use(
+      http.post(`${API_URL}/users`, () => {
+        apiCalled = true;
+
+        return HttpResponse.json(mockUserDto);
+      }),
+    );
 
     const { click, type } = renderRegisterForm();
 
@@ -63,13 +70,24 @@ describe('RegisterForm', () => {
     await click(screen.getByRole('button', { name: /sign up/i }));
 
     await waitFor(() => {
-      expect(mockedApiPost).toHaveBeenCalled();
+      expect(apiCalled).toBe(true);
       expect(navigate).toHaveBeenCalled();
     });
   });
 
   it('displays errors message on registration failure', async () => {
-    mockedApiPost.mockRejectedValue(new Error('Request failed'));
+    server.use(
+      http.post(`${API_URL}/users`, () =>
+        HttpResponse.json(
+          {
+            errors: {
+              body: ['User body is required'],
+            },
+          },
+          { status: 401 },
+        ),
+      ),
+    );
 
     const { click, type } = renderRegisterForm();
 
@@ -79,7 +97,8 @@ describe('RegisterForm', () => {
     await click(screen.getByRole('button', { name: /sign up/i }));
 
     await waitFor(() => {
-      expect(screen.getByText('Request failed')).toBeInTheDocument();
+      const errorList = screen.getByRole('list');
+      expect(errorList).toHaveClass('error-messages');
     });
   });
 });
@@ -103,9 +122,9 @@ const mockRegisterUser: RegisterUser = {
 function renderRegisterForm() {
   const user = userEvent.setup();
   const renderResult = renderWithQueryClient(
-    <BrowserRouter>
+    <MemoryRouter>
       <RegisterForm />
-    </BrowserRouter>,
+    </MemoryRouter>,
   );
 
   return { ...user, ...renderResult };

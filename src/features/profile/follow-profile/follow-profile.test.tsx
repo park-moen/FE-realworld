@@ -1,35 +1,46 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { BrowserRouter } from 'react-router-dom';
-import type { MockedFunction } from 'vitest';
-import { privateApi } from '~shared/api/api.instance';
+import { http, HttpResponse } from 'msw';
+import { MemoryRouter } from 'react-router-dom';
+import { server } from '~shared/lib/mocks/server';
 import { renderWithQueryClient } from '~shared/lib/test/test.lib';
 import { FollowUserButton } from './follow.profile.ui';
 
-vi.mock('~shared/api/api.instance', () => ({
-  privateApi: { post: vi.fn() },
-}));
-
-const mockedApiPost = privateApi.post as MockedFunction<typeof privateApi.post>;
-
-const username = 'mockUser';
+const TEST_USERNAME = 'testuser';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 describe('FollowUserButton Component', () => {
   it('should display the button with the correct text', () => {
     renderFollowUserButton();
 
-    expect(screen.getByRole('button', { name: `Follow ${username}` })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: `Follow ${TEST_USERNAME}` })).toBeInTheDocument();
   });
 
-  it('should call the mutate function with the followed profile when clicked', async () => {
-    mockedApiPost.mockResolvedValue({});
-
+  it('should successfully follow user and call API with correct username', async () => {
     const { click } = renderFollowUserButton();
+    let capturedUsername = '';
 
-    await click(screen.getByRole('button', { name: `Follow ${username}` }));
+    server.use(
+      http.post(`${API_URL}/profiles/:username/follow`, ({ params }) => {
+        capturedUsername = params.username as string;
+
+        return HttpResponse.json({
+          profile: {
+            username: params.username,
+            bio: 'Test bio',
+            image: 'https://api.realworld.io/images/demo-avatar.png',
+            following: true,
+          },
+        });
+      }),
+    );
+
+    const followButton = screen.getByRole('button', { name: `Follow ${TEST_USERNAME}` });
+    await click(followButton);
 
     await waitFor(() => {
-      expect(mockedApiPost).toHaveBeenCalled();
+      expect(capturedUsername).toBe(TEST_USERNAME);
+      expect(followButton).toBeInTheDocument();
     });
   });
 });
@@ -37,9 +48,9 @@ describe('FollowUserButton Component', () => {
 function renderFollowUserButton() {
   const user = userEvent.setup();
   const renderResult = renderWithQueryClient(
-    <BrowserRouter>
-      <FollowUserButton username={username} />
-    </BrowserRouter>,
+    <MemoryRouter>
+      <FollowUserButton username={TEST_USERNAME} />
+    </MemoryRouter>,
   );
 
   return { ...user, ...renderResult };
