@@ -1,3 +1,7 @@
+// ! api.schemas.ts에서는 Request와 Response의 변수명도 명확하지 않음.
+// ! Request DTO와 Response DTO의 변수명을 명확히 작성하거나
+// ! Request DTO와 Response DTO를 분리하는게 올바른 방향으로 보임.
+
 import { z } from 'zod';
 
 export const RegisterUserDtoSchema = z.object({
@@ -60,6 +64,15 @@ export const ArticleDtoSchema = z.object({
   }),
 });
 
+export const CreateArticleDtoSchema = z.object({
+  article: z.object({
+    title: z.string().min(1),
+    description: z.string().min(1),
+    body: z.string().min(1),
+    tagList: z.array(z.string()).optional(),
+  }),
+});
+
 export const ArticlesDtoSchema = z.object({
   articles: z.array(ArticleDtoSchema.shape.article),
   articlesCount: z.number(),
@@ -107,6 +120,7 @@ export type ProfileDto = z.infer<typeof ProfileDtoSchema>;
 export type ArticleDto = z.infer<typeof ArticleDtoSchema>;
 export type ArticlesDto = z.infer<typeof ArticlesDtoSchema>;
 export type FilterQueryDto = z.infer<typeof FilterQueryDtoSchema>;
+export type CreateArticleDto = z.infer<typeof CreateArticleDtoSchema>;
 
 export type CommentDto = z.infer<typeof CommentDtoSchema>;
 export type CommentsDto = z.infer<typeof CommentsDtoSchema>;

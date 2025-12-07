@@ -6,7 +6,10 @@ export const pathKey = {
   home: '/',
   page404: '/404',
 
-  article: {},
+  article: {
+    root: '/article/',
+    bySlug: (slug: string) => `/article/${slug}/`,
+  },
 
   profile: {
     root: '/profile/',
