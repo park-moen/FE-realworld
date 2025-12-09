@@ -26,6 +26,8 @@ interface IArticleCreateRequest {
   };
 }
 
+type IArticleUpdateRequest = Partial<IArticleCreateRequest>;
+
 const API_URL = import.meta.env.VITE_API_URL;
 
 export const handlers = [
@@ -108,6 +110,30 @@ export const handlers = [
         description,
         body,
         tags: tagList || [],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        favorited: false,
+        favoritesCount: 42,
+        author: {
+          username: 'testUser',
+          bio: 'This is a mock bio of the author.',
+          image: 'https://example.com/mock-image.jpg',
+        },
+      },
+    });
+  }),
+
+  http.put(`${API_URL}/articles/:slug`, async ({ request }) => {
+    const { article } = (await request.json()) as IArticleUpdateRequest;
+    const slug = article?.title.toLocaleLowerCase().replace(/\s+/g, '-');
+
+    return HttpResponse.json({
+      article: {
+        slug,
+        title: article?.title,
+        description: article?.description,
+        body: article?.body,
+        tags: article?.tagList || [],
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         favorited: false,
