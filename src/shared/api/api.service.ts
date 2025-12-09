@@ -142,6 +142,13 @@ export async function updateArticle(
   return parsedResponse;
 }
 
+export async function favoriteArticle(slug: string, config?: AxiosRequestConfig): Promise<ArticleDto> {
+  const response = await privateApi.post(`/articles/${slug}/favorite`, {}, config);
+  const parsedResponse = ArticleDtoSchema.parse(response.data);
+
+  return parsedResponse;
+}
+
 export async function getAllCommentsBySlug(slug: string, config?: AxiosRequestConfig): Promise<CommentsDto> {
   const response = await privateApi.get(`/articles/${slug}/comments`, config);
   const parsedResponse = CommentsDtoSchema.parse(response.data);
