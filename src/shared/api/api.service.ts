@@ -13,6 +13,7 @@ import {
   RefreshResponseDtoSchema,
   RegisterUserDtoSchema,
   TagsDtoSchema,
+  UpdateArticleDtoSchema,
   UserDtoSchema,
   type ArticleDto,
   type ArticlesDto,
@@ -24,6 +25,7 @@ import {
   type RefreshResponseDto,
   type RegisterUserDto,
   type TagsDto,
+  type UpdateArticleDto,
   type UserDto,
 } from './api.schemas';
 
@@ -123,6 +125,18 @@ export async function createArticle(
 ): Promise<ArticleDto> {
   const data = CreateArticleDtoSchema.parse(createArticleDto);
   const response = await privateApi.post('/articles', data, config);
+  const parsedResponse = ArticleDtoSchema.parse(response.data);
+
+  return parsedResponse;
+}
+
+export async function updateArticle(
+  slug: string,
+  updateArticleDto: UpdateArticleDto,
+  config?: AxiosRequestConfig,
+): Promise<ArticleDto> {
+  const data = UpdateArticleDtoSchema.parse(updateArticleDto);
+  const response = await privateApi.put(`/articles/${slug}`, data, config);
   const parsedResponse = ArticleDtoSchema.parse(response.data);
 
   return parsedResponse;
