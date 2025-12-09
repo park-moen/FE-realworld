@@ -73,6 +73,10 @@ export const CreateArticleDtoSchema = z.object({
   }),
 });
 
+export const UpdateArticleDtoSchema = z.object({
+  article: CreateArticleDtoSchema.shape.article.partial(),
+});
+
 export const ArticlesDtoSchema = z.object({
   articles: z.array(ArticleDtoSchema.shape.article),
   articlesCount: z.number(),
@@ -121,6 +125,7 @@ export type ArticleDto = z.infer<typeof ArticleDtoSchema>;
 export type ArticlesDto = z.infer<typeof ArticlesDtoSchema>;
 export type FilterQueryDto = z.infer<typeof FilterQueryDtoSchema>;
 export type CreateArticleDto = z.infer<typeof CreateArticleDtoSchema>;
+export type UpdateArticleDto = z.infer<typeof UpdateArticleDtoSchema>;
 
 export type CommentDto = z.infer<typeof CommentDtoSchema>;
 export type CommentsDto = z.infer<typeof CommentsDtoSchema>;
