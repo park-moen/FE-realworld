@@ -41,8 +41,8 @@ export const UpdateUserDtoSchema = z.object({
       username: z.string(),
       email: z.email(),
       password: z.string(),
-      bio: z.string(),
-      image: z.string(),
+      bio: z.string().nullable(),
+      image: z.string().nullable(),
     })
     .partial()
     .refine((data) => Object.keys(data).length > 0, { error: 'At least one field must be provided' }),
