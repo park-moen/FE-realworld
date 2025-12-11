@@ -148,6 +148,8 @@ export const handlers = [
     });
   }),
 
+  http.delete(`${API_URL}/articles/:slug`, () => new HttpResponse(null, { status: 204 })),
+
   http.get(`${API_URL}/articles/:slug`, ({ params }) => {
     const slug = params.slug as string;
     const state = articleStates.get(slug) || { favorited: false, favoritesCount: 42 };
