@@ -1,6 +1,6 @@
-import { useMutation, type DefaultError, type UseMutationOptions } from '@tanstack/react-query';
+import { useMutation, useQueryClient, type DefaultError, type UseMutationOptions } from '@tanstack/react-query';
 import { favoriteArticle } from '~shared/api/api.service';
-import { queryClient } from '~shared/queryClient';
+// import { queryClient } from '~shared/queryClient';
 import { ARTICLES_ROOT_QUERY_KEY } from '~entities/article/article.api';
 import { transformArticleDtoToArticle } from '~entities/article/article.lib';
 import type { Article } from '~entities/article/article.type';
@@ -10,6 +10,7 @@ export function useFavoriteArticleMutation(
   options: Pick<UseMutationOptions<Article, DefaultError, string, { previousArticle: unknown }>, 'mutationKey'> = {},
 ) {
   const { mutationKey = [] } = options;
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationKey: ['article', 'favorite', ...mutationKey],
