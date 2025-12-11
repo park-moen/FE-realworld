@@ -29,6 +29,7 @@ interface IArticleCreateRequest {
 type IArticleUpdateRequest = Partial<IArticleCreateRequest>;
 
 const API_URL = import.meta.env.VITE_API_URL;
+const articleStates = new Map<string, { favorited: boolean; favoritesCount: number }>();
 
 export const handlers = [
   http.get(`${API_URL}/users/user`, () =>
@@ -147,6 +148,60 @@ export const handlers = [
     });
   }),
 
+  http.get(`${API_URL}/articles/:slug`, ({ params }) => {
+    const slug = params.slug as string;
+    const state = articleStates.get(slug) || { favorited: false, favoritesCount: 42 };
+
+    return HttpResponse.json({
+      article: {
+        slug,
+        title: 'Example Article Title',
+        description: 'This is a mock description of the article',
+        body: 'This is the body of the mock article. It contains details content.',
+        tags: ['mock', 'test', 'articles'],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        favorited: state.favorited,
+        favoritesCount: state.favoritesCount,
+        author: {
+          username: 'mockUser',
+          bio: 'This is a mock bio of the author.',
+          image: 'https://example.com/mock-image.jpg',
+        },
+      },
+    });
+  }),
+
+  http.post(`${API_URL}/articles/:slug/favorite`, ({ params }) => {
+    const slug = params.slug as string;
+    const currentState = articleStates.get(slug) || { favorited: false, favoritesCount: 42 };
+    const newState = {
+      favorited: true,
+      favoritesCount: currentState.favorited ? currentState.favoritesCount : currentState.favoritesCount + 1,
+    };
+
+    articleStates.set(slug, newState);
+
+    return HttpResponse.json({
+      article: {
+        slug,
+        title: 'Example Article Title',
+        description: 'This is a mock description of the article',
+        body: 'This is the body of the mock article. It contains details content.',
+        tags: ['mock', 'test', 'articles'],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        favorited: newState.favorited,
+        favoritesCount: newState.favoritesCount,
+        author: {
+          username: 'mockUser',
+          bio: 'This is a mock bio of the author.',
+          image: 'https://example.com/mock-image.jpg',
+        },
+      },
+    });
+  }),
+
   http.post(`${API_URL}/articles/:slug/comments`, async ({ request }) => {
     const body = await request.json();
     const commentBody = (body as { comment: { body: string } }).comment.body;
@@ -175,3 +230,7 @@ export const handlers = [
     }),
   ),
 ];
+
+export function resetArticleStates() {
+  articleStates.clear();
+}
