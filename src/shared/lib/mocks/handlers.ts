@@ -202,6 +202,36 @@ export const handlers = [
     });
   }),
 
+  http.delete(`${API_URL}/articles/:slug/favorite`, ({ params }) => {
+    const slug = params.slug as string;
+    const currentState = articleStates.get(slug) || { favorited: false, favoritesCount: 42 };
+    const newState = {
+      favorited: false,
+      favoritesCount: currentState.favorited ? currentState.favoritesCount : currentState.favoritesCount - 1,
+    };
+
+    articleStates.set(slug, newState);
+
+    return HttpResponse.json({
+      article: {
+        slug,
+        title: 'Example Article Title',
+        description: 'This is a mock description of the article',
+        body: 'This is the body of the mock article. It contains details content.',
+        tags: ['mock', 'test', 'articles'],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        favorited: newState.favorited,
+        favoritesCount: newState.favoritesCount,
+        author: {
+          username: 'mockUser',
+          bio: 'This is a mock bio of the author.',
+          image: 'https://example.com/mock-image.jpg',
+        },
+      },
+    });
+  }),
+
   http.post(`${API_URL}/articles/:slug/comments`, async ({ request }) => {
     const body = await request.json();
     const commentBody = (body as { comment: { body: string } }).comment.body;
