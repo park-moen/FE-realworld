@@ -18,3 +18,4 @@ export const sessionSlice = createSlice({
 
 export const { setSession, resetSession } = sessionSlice.actions;
 export const { selectSession } = sessionSlice.selectors;
+export const sessionReducer = sessionSlice.reducer;
