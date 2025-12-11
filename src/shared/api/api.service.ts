@@ -142,6 +142,10 @@ export async function updateArticle(
   return parsedResponse;
 }
 
+export async function deleteArticle(slug: string, config?: AxiosRequestConfig): Promise<void> {
+  return privateApi.delete(`/articles/${slug}`, config);
+}
+
 export async function favoriteArticle(slug: string, config?: AxiosRequestConfig): Promise<ArticleDto> {
   const response = await privateApi.post(`/articles/${slug}/favorite`, {}, config);
   const parsedResponse = ArticleDtoSchema.parse(response.data);
