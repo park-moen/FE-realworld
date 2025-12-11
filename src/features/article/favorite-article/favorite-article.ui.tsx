@@ -32,8 +32,8 @@ export function FavoriteArticleExtendedButton({ article }: FavoriteArticleButton
   return (
     <Button color="primary" variant="outline" onClick={handleFavorite} data-test="favorite-extended-button">
       <IoHeart size={16} />
-      &nbsp;Favorite Article&nbsp;
-      <span className="counter">({article.favoritesCount})</span>
+      Favorite Article
+      <span className="counter">{article.favoritesCount}</span>
     </Button>
   );
 }
