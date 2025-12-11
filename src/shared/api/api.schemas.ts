@@ -35,6 +35,19 @@ export const RefreshResponseDtoSchema = z.object({
   }),
 });
 
+export const UpdateUserDtoSchema = z.object({
+  user: z
+    .object({
+      username: z.string(),
+      email: z.email(),
+      password: z.string(),
+      bio: z.string(),
+      image: z.string(),
+    })
+    .partial()
+    .refine((data) => Object.keys(data).length > 0, { error: 'At least one field must be provided' }),
+});
+
 export const ProfileDtoSchema = z.object({
   profile: z.object({
     username: z.string(),
@@ -118,6 +131,7 @@ export type RegisterUserDto = z.infer<typeof RegisterUserDtoSchema>;
 export type LoginUserDto = z.infer<typeof LoginUserDtoSchema>;
 export type UserDto = z.infer<typeof UserDtoSchema>;
 export type RefreshResponseDto = z.infer<typeof RefreshResponseDtoSchema>;
+export type UpdateUserDto = z.infer<typeof UpdateUserDtoSchema>;
 
 export type ProfileDto = z.infer<typeof ProfileDtoSchema>;
 
