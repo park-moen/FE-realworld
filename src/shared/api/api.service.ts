@@ -14,6 +14,7 @@ import {
   RegisterUserDtoSchema,
   TagsDtoSchema,
   UpdateArticleDtoSchema,
+  UpdateUserDtoSchema,
   UserDtoSchema,
   type ArticleDto,
   type ArticlesDto,
@@ -26,6 +27,7 @@ import {
   type RegisterUserDto,
   type TagsDto,
   type UpdateArticleDto,
+  type UpdateUserDto,
   type UserDto,
 } from './api.schemas';
 
@@ -75,6 +77,14 @@ export async function refreshAccessToken(): Promise<RefreshResponseDto> {
     logger.tokenRefreshFailed(error);
     throw error;
   }
+}
+
+export async function updateUser(updateUserDto: UpdateUserDto, config?: AxiosRequestConfig): Promise<UserDto> {
+  const data = UpdateUserDtoSchema.parse(updateUserDto);
+  const response = await privateApi.put('/users/user', data, config);
+  const parsedResponse = UserDtoSchema.parse(response.data);
+
+  return parsedResponse;
 }
 
 export async function getProfileByUsername(username: string, config?: AxiosRequestConfig): Promise<ProfileDto> {

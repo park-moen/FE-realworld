@@ -8,6 +8,16 @@ interface IUserLoginRequest {
   };
 }
 
+interface IUserUpdateRequest {
+  user: {
+    username?: string;
+    email?: string;
+    password?: string;
+    bio?: string;
+    image?: string;
+  };
+}
+
 interface IUserRegisterRequest {
   user: {
     username: string;
@@ -72,6 +82,22 @@ export const handlers = [
         token: 'mock-jwt-token',
         bio: 'Test bio',
         image: 'https://api.realworld.io/images/demo-avatar.png',
+      },
+    });
+  }),
+
+  http.put(`${API_URL}/users/user`, async ({ request }) => {
+    const {
+      user: { username, email, bio, image },
+    } = (await request.json()) as IUserUpdateRequest;
+
+    return HttpResponse.json({
+      user: {
+        username,
+        email,
+        token: 'mock-jwt-token',
+        bio: bio ?? null,
+        image: image ?? null,
       },
     });
   }),
