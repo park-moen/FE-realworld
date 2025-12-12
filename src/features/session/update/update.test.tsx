@@ -61,6 +61,7 @@ describe('UpdateSessionForm', () => {
     await click(submitButton);
 
     expect(usernameInput).toHaveValue('changed-username');
+    expect(navigate).toHaveBeenCalled();
   });
 });
 
