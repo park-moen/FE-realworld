@@ -1,5 +1,5 @@
 import { createBrowserRouter, RouterProvider, type RouteObject } from 'react-router-dom';
-import { HomePage } from '~pages/home/Homepage';
+import { homePageRoute } from '~pages/home/home-page.route';
 import { loginPageRoute } from '~pages/login/login-page.route';
 import { registerPageRoute } from '~pages/register/register-page.route';
 
@@ -14,13 +14,6 @@ const browserRouter = createBrowserRouter([
       loader: (await import('~pages/layouts/layout.loader')).default,
       Component: (await import('~pages/layouts/layout.ui')).default,
     }),
-    children: [
-      {
-        index: true,
-        Component: HomePage,
-      },
-      registerPageRoute,
-      loginPageRoute,
-    ],
+    children: [homePageRoute, registerPageRoute, loginPageRoute],
   },
 ] satisfies RouteObject[]);
