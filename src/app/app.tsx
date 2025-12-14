@@ -9,7 +9,7 @@ import { BootstrappedRouter } from './browser-router';
 export default function App() {
   return (
     <ReduxProvider store={store}>
-      <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
+      <PersistGate persistor={persistor}>
         <QueryClientProvider client={queryClient}>
           <BootstrappedRouter />
           <ReactQueryDevtools initialIsOpen={false} />
