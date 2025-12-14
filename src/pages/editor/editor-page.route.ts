@@ -11,5 +11,12 @@ export const editorPageRoute = {
         Component: () => import('./editor-page.ui').then((module) => module.CreateEditorPage),
       },
     },
+    {
+      path: ':slug',
+      lazy: {
+        loader: () => import('./editor-page.loader').then((module) => module.editorUpdatePageLoader),
+        Component: () => import('./editor-page.ui').then((module) => module.UpdateEditorPage),
+      },
+    },
   ],
 } satisfies RouteObject;
