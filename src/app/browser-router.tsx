@@ -1,4 +1,5 @@
 import { createBrowserRouter, RouterProvider, type RouteObject } from 'react-router-dom';
+import { articlePageRoute } from '~pages/article/article-page.route';
 import { editorPageRoute } from '~pages/editor/editor-page.route';
 import { homePageRoute } from '~pages/home/home-page.route';
 import { layoutRoute } from '~pages/layouts/layout.route';
@@ -20,6 +21,7 @@ const browserRouter = createBrowserRouter([
           homePageRoute,
           registerPageRoute,
           loginPageRoute,
+          articlePageRoute,
           editorPageRoute,
           profilePageRoute,
           settingsPageRoute,
