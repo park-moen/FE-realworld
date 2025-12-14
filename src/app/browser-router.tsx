@@ -1,4 +1,5 @@
 import { createBrowserRouter, RouterProvider, type RouteObject } from 'react-router-dom';
+import { editorPageRoute } from '~pages/editor/editor-page.route';
 import { homePageRoute } from '~pages/home/home-page.route';
 import { layoutRoute } from '~pages/layouts/layout.route';
 import { loginPageRoute } from '~pages/login/login-page.route';
@@ -15,7 +16,14 @@ const browserRouter = createBrowserRouter([
     children: [
       {
         ...layoutRoute,
-        children: [homePageRoute, registerPageRoute, loginPageRoute, profilePageRoute, settingsPageRoute],
+        children: [
+          homePageRoute,
+          registerPageRoute,
+          loginPageRoute,
+          editorPageRoute,
+          profilePageRoute,
+          settingsPageRoute,
+        ],
       },
     ],
   },
