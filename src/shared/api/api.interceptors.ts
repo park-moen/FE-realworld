@@ -1,7 +1,8 @@
 /* eslint-disable no-underscore-dangle */
 import { AxiosError, type InternalAxiosRequestConfig } from 'axios';
 import { store } from '~shared/store';
-import { privateApi } from './api.instance';
+import { privateApi, publicApi } from './api.instance';
+import { createValidationErrorInterceptor } from './interceptors/validation-error.interceptor';
 import { tokenManager, TokenManager } from './token-manger';
 
 export async function setupTokenManger(): Promise<void> {
@@ -62,6 +63,15 @@ export function setupApiInterceptors(): void {
         return Promise.reject(refreshError);
       }
     },
+  );
+
+  const publicValidationInterceptor = createValidationErrorInterceptor();
+  publicApi.interceptors.response.use(publicValidationInterceptor.onFulfilled, publicValidationInterceptor.onRejected);
+
+  const privateValidationInterceptor = createValidationErrorInterceptor();
+  privateApi.interceptors.response.use(
+    privateValidationInterceptor.onFulfilled,
+    privateValidationInterceptor.onRejected,
   );
 }
 

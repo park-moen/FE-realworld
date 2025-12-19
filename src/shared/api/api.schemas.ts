@@ -127,6 +127,33 @@ export const TagsDtoSchema = z.object({
   tags: z.array(z.string()),
 });
 
+export const ApiErrorDataDtoSchema = z.object({
+  error: z.object({
+    code: z.string(),
+    message: z.string(),
+    statusCode: z.number(),
+    timestamp: z.string(),
+    path: z.string(),
+    correlationId: z.string(),
+    details: z.unknown().optional(),
+    stack: z.string().optional(),
+  }),
+});
+export const ApiErrorDataSchema = z.object({
+  code: z.string(),
+  message: z.string(),
+  statusCode: z.number(),
+  timestamp: z.string(),
+  path: z.string(),
+  correlationId: z.string(),
+  details: z
+    .object({
+      raw: z.unknown().optional(),
+      messages: z.array(z.string()),
+    })
+    .optional(),
+});
+
 export type RegisterUserDto = z.infer<typeof RegisterUserDtoSchema>;
 export type LoginUserDto = z.infer<typeof LoginUserDtoSchema>;
 export type UserDto = z.infer<typeof UserDtoSchema>;
@@ -146,3 +173,6 @@ export type CommentsDto = z.infer<typeof CommentsDtoSchema>;
 export type CreateCommentDto = z.infer<typeof CreateCommentDtoSchema>;
 
 export type TagsDto = z.infer<typeof TagsDtoSchema>;
+
+export type ApiErrorDataDto = z.infer<typeof ApiErrorDataDtoSchema>;
+export type ApiErrorData = z.infer<typeof ApiErrorDataSchema>;
