@@ -34,6 +34,10 @@ export function setupApiInterceptors(): void {
         return Promise.reject(error);
       }
 
+      if (originalConfig.url?.includes('users/login') || originalConfig.url?.includes('users/register')) {
+        return Promise.reject(error);
+      }
+
       if (originalConfig?.url?.includes('/users/refresh')) {
         if (TokenManager.shouldLogout(error)) {
           TokenManager.handleLogout(error);
