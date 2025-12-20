@@ -5,6 +5,7 @@ import { IoCreateOutline, IoSettingsSharp } from 'react-icons/io5';
 import { useSelector } from 'react-redux';
 import { NavLink, Outlet } from 'react-router-dom';
 import { pathKey } from '~shared/router';
+import { Avatar } from '~shared/ui/avatar/avatar.ui';
 import { logError } from '~shared/ui/error-handler/error-handler.lib';
 import { ErrorHandler } from '~shared/ui/error-handler/error-handler.ui';
 import { Skeleton } from '~shared/ui/skeleton/skeleton.ui';
@@ -150,7 +151,7 @@ function ProfileLink() {
 
   return (
     <NavLink className="nav-link" to={pathKey.profile.byUsername(user.username)}>
-      <img className="user-pic" src={user.image ?? undefined} alt={user.username} /> {user.username}
+      <Avatar src={user.image} alt={user.username} size="sm" />
     </NavLink>
   );
 }

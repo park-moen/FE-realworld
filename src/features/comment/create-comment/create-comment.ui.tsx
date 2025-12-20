@@ -5,6 +5,7 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { ErrorBoundary } from 'react-error-boundary';
 import { useForm } from 'react-hook-form';
 import { getErrorMessage } from '~shared/lib/utils';
+import { Avatar } from '~shared/ui/avatar/avatar.ui';
 import { logError } from '~shared/ui/error-handler/error-handler.lib';
 import { ErrorHandler } from '~shared/ui/error-handler/error-handler.ui';
 import { sessionQueryOptions } from '~entities/session/session.api';
@@ -79,7 +80,7 @@ function BaseCreateCommentFrom({ slug }: CreateCommentFormProps) {
             <ErrorMessage errors={errors} name="body" as="div" role="alert" />
           </fieldset>
           <div className="card-footer">
-            <img src={user.image || ''} alt={user.username} className="comment-author-img" />
+            <Avatar src={user.image} alt={user.username} size="md" />
             <button type="submit" className="btn btn-sm btn-primary" disabled={!canSubmit} data-test="comment-submit">
               Post Comment
             </button>

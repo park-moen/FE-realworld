@@ -4,6 +4,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { IoAdd, IoHeart, IoPencil } from 'react-icons/io5';
 import { Link, useLoaderData, useNavigate } from 'react-router-dom';
 import { pathKey } from '~shared/router';
+import { Avatar } from '~shared/ui/avatar/avatar.ui';
 import { Button } from '~shared/ui/button/button.ui';
 import { logError } from '~shared/ui/error-handler/error-handler.lib';
 import { ErrorHandler } from '~shared/ui/error-handler/error-handler.ui';
@@ -88,7 +89,7 @@ function ArticleMeta({ article, actions }: { article: Article; actions?: ReactNo
   return (
     <div className="article-meta">
       <Link to={pathKey.profile.byUsername(author.username)}>
-        <img src={author.image ?? ''} alt={author.username} />
+        <Avatar src={author.image} alt={author.username} size="md" />
       </Link>
 
       <div className="info">

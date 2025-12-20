@@ -3,6 +3,7 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Link } from 'react-router-dom';
 import { pathKey } from '~shared/router';
+import { Avatar } from '~shared/ui/avatar/avatar.ui';
 import { logError } from '~shared/ui/error-handler/error-handler.lib';
 import { ErrorHandler } from '~shared/ui/error-handler/error-handler.ui';
 import { commentsQueryOptions } from '~entities/comment/comment.api';
@@ -78,7 +79,7 @@ function CommentCard({ comment, actions }: { comment: Comment; actions?: ReactNo
 
       <div className="card-footer">
         <Link to={pathKey.profile.byUsername(username)} className="comment-author">
-          <img src={image ?? ''} alt={username} className="comment-author-img" />
+          <Avatar src={image} alt={username} size="md" />
         </Link>
 
         <Link to={pathKey.profile.byUsername(username)} className="comment-author">

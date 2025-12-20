@@ -4,6 +4,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { IoAdd, IoSettingsSharp } from 'react-icons/io5';
 import { useLoaderData, useNavigate } from 'react-router-dom';
 import { pathKey } from '~shared/router';
+import { Avatar } from '~shared/ui/avatar/avatar.ui';
 import { Button } from '~shared/ui/button/button.ui';
 import { logError } from '~shared/ui/error-handler/error-handler.lib';
 import { ErrorHandler } from '~shared/ui/error-handler/error-handler.ui';
@@ -59,7 +60,7 @@ function BaseProfileInfo() {
 
   return (
     <>
-      <img src={profile.image ?? ''} alt={profile.username} className="user-img" />
+      <Avatar src={profile.image} alt={profile.username} size="sm" />
       <h4>{profile.username}</h4>
       <p>{profile.bio}</p>
 
