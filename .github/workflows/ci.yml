@@ -91,9 +91,11 @@ jobs:
         run: npm run e2e:ci:preview
         env:
           CI: true
-          NODE_ENV: production
+          NODE_ENV: development
           BASE_URL: https://localhost:5173
           PLAYWRIGHT_API_URL: ${{ secrets.RAILWAY_API_URL }}
+          VITE_BACKEND_URL: https://realworld-nest-prisma-production.up.railway.app
+          VITE_API_URL: /api
           # 🔥 자체 서명 인증서 허용
           NODE_TLS_REJECT_UNAUTHORIZED: "0"
 
@@ -102,9 +104,11 @@ jobs:
         run: npm run e2e:ci
         env:
           CI: true
-          NODE_ENV: production
+          NODE_ENV: development
           BASE_URL: https://localhost:5173
           PLAYWRIGHT_API_URL: ${{ secrets.RAILWAY_API_URL }}
+          VITE_BACKEND_URL: https://realworld-nest-prisma-production.up.railway.app
+          VITE_API_URL: /api
           # 🔥 자체 서명 인증서 허용
           NODE_TLS_REJECT_UNAUTHORIZED: "0"
 
