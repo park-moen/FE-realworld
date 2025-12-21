@@ -16,7 +16,7 @@ const IS_HTTPS = BASE_URL.startsWith('https');
 export default defineConfig({
   testDir: './e2e',
 
-  testMatch: ['**/flows/**/*.spec.ts', '**/pages/**/*.spec.ts'],
+  testMatch: ['**/flows/**/*.spec.ts', '**/pages/**/*.spec.ts', '**/smoke/**/*.spec.ts'],
 
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
