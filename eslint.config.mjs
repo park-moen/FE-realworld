@@ -183,8 +183,8 @@ const environmentConfig = [
 const testFilesOverrides = [
   {
     name: 'custom/test-overrides',
-    // 테스트 관련 파일 및 Cypress 설정 파일
-    files: ['src/shared/lib/test/**/*.{js,ts,jsx,tsx}', 'cypress.config.ts', 'cypress/**', 'src/**/*.{js,ts,jsx,tsx}'],
+    // 테스트 관련 파일 및 E2E 설정 파일
+    files: ['src/shared/lib/test/**/*.{js,ts,jsx,tsx}', 'src/**/*.{js,ts,jsx,tsx}', 'playwright.config.ts', 'e2e/**'],
     rules: {
       // devDependencies import 허용
       // 이유: 테스트 파일에서는 테스트 라이브러리 import 필요

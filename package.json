@@ -12,9 +12,13 @@
     "test": "vitest --run",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --run --coverage",
-    "cy:open": "cross-env NODE_ENV=development CYPRESS_ENV=debug cypress open",
-    "cy:run": "cross-env NODE_ENV=development CYPRESS_ENV=debug cypress run",
-    "cy:run:preview": "cross-env NODE_ENV=development CYPRESS_ENV=preview cypress run",
+    "e2e:open": "cross-env NODE_ENV=development playwright test --ui",
+    "e2e:run": "cross-env NODE_ENV=development playwright test",
+    "e2e:run:headed": "cross-env NODE_ENV=development playwright test --headed",
+    "e2e:debug": "cross-env NODE_ENV=development playwright test --debug",
+    "e2e:report": "playwright show-report",
+    "e2e:ci": "playwright test",
+    "e2e:ci:preview": "playwright test --grep @preview",
     "prepare": "husky",
     "test:pre-push": "npm test"
   },
@@ -38,9 +42,9 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
-    "@cypress/grep": "^5.0.0",
     "@eslint/compat": "^1.4.0",
     "@eslint/js": "^9.38.0",
+    "@playwright/test": "^1.57.0",
     "@stylistic/eslint-plugin": "^3.1.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",
@@ -54,7 +58,6 @@
     "@vitest/coverage-v8": "^3.2.4",
     "@vitest/ui": "^3.2.4",
     "cross-env": "^10.1.0",
-    "cypress": "^14.5.4",
     "dotenv": "^17.2.3",
     "eslint": "^9.38.0",
     "eslint-config-airbnb-extended": "^2.3.2",
@@ -75,8 +78,7 @@
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.2",
     "vite": "^7.1.7",
-    "vitest": "^3.2.4",
-    "wait-on": "^9.0.1"
+    "vitest": "^3.2.4"
   },
   "lint-staged": {
     "*.{ts,js,jsx,tsx}": [
