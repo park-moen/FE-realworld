@@ -202,6 +202,19 @@ const testFilesOverrides = [
   },
 ];
 
+// E2E 파일에 대한 React Hooks 규칙 비활성화
+const e2eFilesOverrides = [
+  {
+    name: 'custom/e2e-overrides',
+    files: ['e2e/**/*.{js,ts}', 'playwright.config.ts', '**/fixtures/**/*.{js,ts}'],
+    rules: {
+      'react-hooks/rules-of-hooks': 'off',
+      'react-hooks/exhaustive-deps': 'off',
+      'import-x/no-extraneous-dependencies': 'off',
+    },
+  },
+];
+
 export default [
   // .gitignore에 명시된 파일/폴더를 ESLint에서 제외
   includeIgnoreFile(gitignorePath),
@@ -221,4 +234,6 @@ export default [
   ...environmentConfig,
   // 테스트 파일 예외 규칙
   ...testFilesOverrides,
+  // e2e 테스트 파일 예외 규칙
+  ...e2eFilesOverrides,
 ];
