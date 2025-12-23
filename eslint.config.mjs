@@ -49,20 +49,29 @@ const typescriptConfig = [
   // Airbnb React + TypeScript 설정
   ...configs.react.typescript,
 
-  // ✅ TypeScript Import Resolver 설정
+  // 기본 설정: src 파일은 tsconfig.json (참조를 통해 tsconfig.app.json 사용)
   {
     name: 'typescript/import-resolver',
+    files: ['src/**/*.{ts,tsx}'], // src 파일에만 적용
     settings: {
       'import-x/resolver-next': [
         createTypeScriptImportResolver({
-          // @types 디렉토리를 항상 확인
           alwaysTryTypes: true,
+          project: ['./tsconfig.json'], // src용 tsconfig
+        }),
+      ],
+    },
+  },
 
-          // ✅ tsconfig.app.json 사용 (애플리케이션 코드)
-          // project: './tsconfig.app.json', // 단일 파일 방식
-
-          // ✅ 여러 tsconfig 지원 (권장)
-          project: ['./tsconfig.json'],
+  // E2E 전용 설정: e2e 파일은 tsconfig.node.json 사용
+  {
+    name: 'typescript/import-resolver-e2e',
+    files: ['e2e/**/*.{ts,js}', 'playwright.config.ts'], // e2e 파일에만 적용
+    settings: {
+      'import-x/resolver-next': [
+        createTypeScriptImportResolver({
+          alwaysTryTypes: true,
+          project: ['./tsconfig.node.json'], // e2e용 tsconfig
         }),
       ],
     },
