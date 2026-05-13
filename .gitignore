@@ -145,3 +145,11 @@ vite.config.ts.timestamp-*
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+# Local AI agent skill folders (Claude Code / Gemini CLI / OpenAI Codex CLI)
+.claude/
+.gemini/
+.codex/
+CLAUDE.md
+AGENTS.md
+
